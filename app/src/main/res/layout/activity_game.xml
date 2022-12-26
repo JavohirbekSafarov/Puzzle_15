@@ -32,7 +32,6 @@
         app:layout_constraintHorizontal_bias="0.686"
         app:layout_constraintStart_toStartOf="@+id/goBackbtn"
         app:layout_constraintTop_toTopOf="@+id/goBackbtn">
-
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="wrap_content"
@@ -53,6 +52,7 @@
                 android:textSize="20dp" />
 
             <TextView
+                android:id="@+id/movesTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_medium"
@@ -61,7 +61,6 @@
                 android:textSize="20dp" />
 
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,6 +79,7 @@
                 android:textSize="20dp" />
 
             <TextView
+                android:id="@+id/timeTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_medium"
@@ -93,344 +93,231 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/gridback"
         android:orientation="vertical"
-        android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <RelativeLayout
+            <Button
                 android:id="@+id/button1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/border" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:fontFamily="@font/poppins_medium"
-                    android:text="1"
-                    android:textColor="@color/textColor"
-                    android:textSize="45sp" />
-            </RelativeLayout>
-
-            <RelativeLayout
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:text="1"
+                android:textColor="@color/textColor"
+                android:textSize="45sp"
+                android:fontFamily="@font/poppins_medium"
+                android:tag="00"
+                android:onClick="btnClick"
+                />
+            <Button
                 android:id="@+id/button2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/border" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:fontFamily="@font/poppins_medium"
-                    android:text="2"
-                    android:textColor="@color/textColor"
-                    android:textSize="45sp" />
-            </RelativeLayout>
-
-            <RelativeLayout
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:text="2"
+                android:textColor="@color/textColor"
+                android:textSize="45sp"
+                android:fontFamily="@font/poppins_medium"
+                android:textAlignment="center"
+                android:layout_marginHorizontal="5dp"
+                android:tag="01"
+                android:onClick="btnClick"
+                />
+            <Button
                 android:id="@+id/button3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/border" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:fontFamily="@font/poppins_medium"
-                    android:text="3"
-                    android:textColor="@color/textColor"
-                    android:textSize="45sp" />
-            </RelativeLayout>
-
-            <RelativeLayout
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:text="3"
+                android:textColor="@color/textColor"
+                android:textSize="45sp"
+                android:fontFamily="@font/poppins_medium"
+                android:textAlignment="center"
+                android:tag="02"
+                android:onClick="btnClick"
+                />
+            <Button
                 android:id="@+id/button4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/border" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:fontFamily="@font/poppins_medium"
-                    android:text="4"
-                    android:textColor="@color/textColor"
-                    android:textSize="45sp" />
-            </RelativeLayout>
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:text="4"
+                android:layout_marginStart="5dp"
+                android:textColor="@color/textColor"
+                android:textSize="45sp"
+                android:fontFamily="@font/poppins_medium"
+                android:textAlignment="center"
+                android:tag="03"
+                android:onClick="btnClick"
+                />
         </LinearLayout>
-
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <RelativeLayout
+            <Button
                 android:id="@+id/button5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/border" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:fontFamily="@font/poppins_medium"
-                    android:text="5"
-                    android:textColor="@color/textColor"
-                    android:textSize="45sp" />
-            </RelativeLayout>
-
-            <RelativeLayout
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:text="5"
+                android:textColor="@color/textColor"
+                android:textSize="45sp"
+                android:fontFamily="@font/poppins_medium"
+                android:tag="10"
+                android:onClick="btnClick"
+                />
+            <Button
                 android:id="@+id/button6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/border" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:fontFamily="@font/poppins_medium"
-                    android:text="6"
-                    android:textColor="@color/textColor"
-                    android:textSize="45sp" />
-            </RelativeLayout>
-
-            <RelativeLayout
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:text="6"
+                android:textColor="@color/textColor"
+                android:textSize="45sp"
+                android:fontFamily="@font/poppins_medium"
+                android:textAlignment="center"
+                android:layout_marginHorizontal="5dp"
+                android:tag="11"
+                android:onClick="btnClick"
+                />
+            <Button
                 android:id="@+id/button7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/border" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:fontFamily="@font/poppins_medium"
-                    android:text="7"
-                    android:textColor="@color/textColor"
-                    android:textSize="45sp" />
-            </RelativeLayout>
-
-            <RelativeLayout
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:text="7"
+                android:textColor="@color/textColor"
+                android:textSize="45sp"
+                android:fontFamily="@font/poppins_medium"
+                android:textAlignment="center"
+                android:tag="12"
+                android:onClick="btnClick"
+                />
+            <Button
                 android:id="@+id/button8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/border" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:fontFamily="@font/poppins_medium"
-                    android:text="8"
-                    android:textColor="@color/textColor"
-                    android:textSize="45sp" />
-            </RelativeLayout>
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:text="8"
+                android:layout_marginStart="5dp"
+                android:textColor="@color/textColor"
+                android:textSize="45sp"
+                android:fontFamily="@font/poppins_medium"
+                android:textAlignment="center"
+                android:tag="13"
+                android:onClick="btnClick"
+                />
         </LinearLayout>
-
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <RelativeLayout
+            <Button
                 android:id="@+id/button9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/border" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:fontFamily="@font/poppins_medium"
-                    android:text="9"
-                    android:textColor="@color/textColor"
-                    android:textSize="45sp" />
-            </RelativeLayout>
-
-            <RelativeLayout
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:text="9"
+                android:textColor="@color/textColor"
+                android:textSize="45sp"
+                android:fontFamily="@font/poppins_medium"
+                android:tag="20"
+                android:onClick="btnClick"
+                />
+            <Button
                 android:id="@+id/button10"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/border" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:fontFamily="@font/poppins_medium"
-                    android:text="10"
-                    android:textColor="@color/textColor"
-                    android:textSize="45sp" />
-            </RelativeLayout>
-
-            <RelativeLayout
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:text="10"
+                android:textColor="@color/textColor"
+                android:textSize="45sp"
+                android:fontFamily="@font/poppins_medium"
+                android:textAlignment="center"
+                android:layout_marginHorizontal="5dp"
+                android:tag="21"
+                android:onClick="btnClick"
+                />
+            <Button
                 android:id="@+id/button11"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/border" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:fontFamily="@font/poppins_medium"
-                    android:text="11"
-                    android:textColor="@color/textColor"
-                    android:textSize="45sp" />
-            </RelativeLayout>
-
-            <RelativeLayout
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:text="11"
+                android:textColor="@color/textColor"
+                android:textSize="45sp"
+                android:fontFamily="@font/poppins_medium"
+                android:textAlignment="center"
+                android:tag="22"
+                android:onClick="btnClick"
+                />
+            <Button
                 android:id="@+id/button12"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/border" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:fontFamily="@font/poppins_medium"
-                    android:text="12"
-                    android:textColor="@color/textColor"
-                    android:textSize="45sp" />
-            </RelativeLayout>
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:text="12"
+                android:layout_marginStart="5dp"
+                android:textColor="@color/textColor"
+                android:textSize="45sp"
+                android:fontFamily="@font/poppins_medium"
+                android:textAlignment="center"
+                android:tag="23"
+                android:onClick="btnClick"
+                />
         </LinearLayout>
-
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <RelativeLayout
+            <Button
                 android:id="@+id/button13"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/border" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:fontFamily="@font/poppins_medium"
-                    android:text="13"
-                    android:textColor="@color/textColor"
-                    android:textSize="45sp" />
-            </RelativeLayout>
-
-            <RelativeLayout
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:text="13"
+                android:textColor="@color/textColor"
+                android:textSize="45sp"
+                android:fontFamily="@font/poppins_medium"
+                android:tag="30"
+                android:onClick="btnClick"
+                />
+            <Button
                 android:id="@+id/button14"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/border" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:fontFamily="@font/poppins_medium"
-                    android:text="14"
-                    android:textColor="@color/textColor"
-                    android:textSize="45sp" />
-            </RelativeLayout>
-
-            <RelativeLayout
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:text="14"
+                android:textColor="@color/textColor"
+                android:textSize="45sp"
+                android:fontFamily="@font/poppins_medium"
+                android:textAlignment="center"
+                android:layout_marginHorizontal="5dp"
+                android:tag="31"
+                android:onClick="btnClick"
+                />
+            <Button
                 android:id="@+id/button15"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/border" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:fontFamily="@font/poppins_medium"
-                    android:text="15"
-                    android:textColor="@color/textColor"
-                    android:textSize="45sp" />
-            </RelativeLayout>
-
-            <RelativeLayout
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:text="15"
+                android:textColor="@color/textColor"
+                android:textSize="45sp"
+                android:fontFamily="@font/poppins_medium"
+                android:textAlignment="center"
+                android:tag="32"
+                android:onClick="btnClick"
+                />
+            <Button
                 android:id="@+id/button16"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp" />
-            </RelativeLayout>
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:layout_marginStart="5dp"
+                android:textColor="@color/textColor"
+                android:textSize="45sp"
+                android:fontFamily="@font/poppins_medium"
+                android:textAlignment="center"
+                android:tag="33"
+                android:onClick="btnClick"
+                />
         </LinearLayout>
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
