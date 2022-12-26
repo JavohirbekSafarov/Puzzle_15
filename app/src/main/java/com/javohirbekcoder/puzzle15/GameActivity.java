@@ -1,20 +1,19 @@
 package com.javohirbekcoder.puzzle15;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.Dialog;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.javohirbekcoder.puzzle15.databinding.ActivityGameBinding;
 
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -27,11 +26,13 @@ public class GameActivity extends AppCompatActivity {
     private int timeCount = 0;
     private int[] tiles;
     boolean isWin = false;
-    private Integer[] btnIds = {R.id.button1, R.id.button2,
+    private final Integer[] btnIds = {R.id.button1, R.id.button2,
             R.id.button3, R.id.button4, R.id.button5, R.id.button6,
             R.id.button7, R.id.button8, R.id.button9, R.id.button10,
             R.id.button11, R.id.button12, R.id.button13, R.id.button14,
             R.id.button15, R.id.button16};
+
+    private Dialog goBackDialog;
 
 
     @Override
@@ -46,6 +47,18 @@ public class GameActivity extends AppCompatActivity {
         loadNumbers();
         generateNumbers();
         loadDataToViews();
+
+        goBackDialog = new Dialog(GameActivity.this);
+    }
+
+    private void callGoBackDialog() {
+        goBackDialog.setContentView(R.layout.go_back_dialog);
+        Button yesBtn = goBackDialog.findViewById(R.id.yesBtn);
+        Button noBtn = goBackDialog.findViewById(R.id.noBtn);
+        goBackDialog.show();
+        yesBtn.setOnClickListener(v -> super.onBackPressed());
+        noBtn.setOnClickListener(v -> goBackDialog.dismiss());
+
     }
 
     private void loadTimer() {
@@ -55,6 +68,10 @@ public class GameActivity extends AppCompatActivity {
                 timeCount++;
                 int second = timeCount % 60;
                 int minute = timeCount / 60;
+                YoYo.with(Techniques.Pulse)
+                        .duration(700)
+                        .repeat(0)
+                        .playOn(findViewById(R.id.timeTv));
                 binding.timeTv.setText(String.format("%02d:%02d", minute, second));
                 //binding.timeTv.setText(String.format("%02d:%02d:%02d", hour, minute, second));
             }
@@ -127,6 +144,10 @@ public class GameActivity extends AppCompatActivity {
             emptyX = x;
             emptyY = y;
             checkWin();
+            YoYo.with(Techniques.FadeIn)
+                    .duration(700)
+                    .repeat(0)
+                    .playOn(findViewById(R.id.movesTv));
             binding.movesTv.setText(String.valueOf(++moves));
         }
     }
@@ -148,5 +169,10 @@ public class GameActivity extends AppCompatActivity {
             Toast.makeText(this, "Win!! moves" + moves, Toast.LENGTH_SHORT).show();
             timer.cancel();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        callGoBackDialog();
     }
 }
