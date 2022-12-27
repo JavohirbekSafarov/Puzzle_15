@@ -2,6 +2,7 @@ package com.javohirbekcoder.puzzle15;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -37,6 +38,10 @@ public class GameActivity extends AppCompatActivity {
     private Dialog goBackDialog, winDialog;
     private boolean isTimerRunning = false;
 
+    private SharedPreferences   sharedPreferences;
+    private SharedPreferences.Editor editor;
+    private int bestRecordMoves;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +50,23 @@ public class GameActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         binding.goBackbtn.setOnClickListener(v -> onBackPressed());
+        binding.shuffleBtn.setOnClickListener(v -> generateNumbers());
         loadTimer();
         loadViews();
         loadNumbers();
         generateNumbers();
-        loadDataToViews();
         loadDialogs();
+        loadBestRecord();
+    }
+
+    private void loadBestRecord() {
+        sharedPreferences = getSharedPreferences("records", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        bestRecordMoves = sharedPreferences.getInt("recordMoves", 99999999);
+        if (bestRecordMoves == 99999999)
+            binding.recordTV.setText("You have not best record!");
+        else
+            binding.recordTV.setText("Best record: " + bestRecordMoves);
     }
 
     private void loadDialogs() {
@@ -114,6 +130,7 @@ public class GameActivity extends AppCompatActivity {
             tiles[randomNum] = tiles[n];
             tiles[n] = temp;
         }
+        loadDataToViews();
         if (!isSolvable())
             generateNumbers();
     }
@@ -177,7 +194,12 @@ public class GameActivity extends AppCompatActivity {
         }
 
         if (isWin) {
-            Toast.makeText(this, "Win!! moves" + moves, Toast.LENGTH_SHORT).show();
+            if (bestRecordMoves > moves){
+                int movesOrginal = moves + 1;
+                editor.putInt("recordMoves", movesOrginal);
+                editor.apply();
+                Toast.makeText(this, "" + movesOrginal, Toast.LENGTH_SHORT).show();
+            }
             callWinDialog(moves, binding.timeTv.getText().toString());
             timer.cancel();
         }

@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
         playgameBtn = (ImageView) findViewById(R.id.playGamebtn);
 
         playgameBtn.setOnClickListener(v -> {
+
             startActivity(new Intent(getApplicationContext(), GameActivity.class));
         });
     }

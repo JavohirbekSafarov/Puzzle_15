@@ -8,6 +8,30 @@
     tools:context=".GameActivity"
     android:background="@drawable/background1">
 
+    <TextView
+        android:id="@+id/recordTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Best Record:"
+        android:textColor="@color/textColor"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/shuffleBtn"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/shuffle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        app:tint="@color/foruthColor" />
+
     <ImageView
         android:id="@+id/goBackbtn"
         android:layout_width="45dp"
@@ -91,15 +115,15 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:padding="5dp"
-        android:background="@drawable/gridback">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -110,52 +134,52 @@
                 android:id="@+id/button1"
                 android:layout_width="80dp"
                 android:layout_height="95dp"
+                android:fontFamily="@font/poppins_medium"
+                android:onClick="btnClick"
+                android:tag="00"
                 android:text="1"
                 android:textColor="@color/textColor"
-                android:textSize="37sp"
-                android:fontFamily="@font/poppins_medium"
-                android:tag="00"
-                android:onClick="btnClick"
-                />
+                android:textSize="37sp" />
+
             <Button
                 android:id="@+id/button2"
                 android:layout_width="80dp"
                 android:layout_height="95dp"
-                android:text="2"
-                android:textColor="@color/textColor"
-                android:textSize="37sp"
-                android:fontFamily="@font/poppins_medium"
-                android:textAlignment="center"
                 android:layout_marginHorizontal="10dp"
-                android:tag="01"
+                android:fontFamily="@font/poppins_medium"
                 android:onClick="btnClick"
-                />
+                android:tag="01"
+                android:text="2"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="37sp" />
+
             <Button
                 android:id="@+id/button3"
                 android:layout_width="80dp"
                 android:layout_height="95dp"
-                android:text="3"
-                android:textColor="@color/textColor"
-                android:textSize="37sp"
                 android:fontFamily="@font/poppins_medium"
-                android:textAlignment="center"
-                android:tag="02"
                 android:onClick="btnClick"
-                />
+                android:tag="02"
+                android:text="3"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="37sp" />
+
             <Button
                 android:id="@+id/button4"
                 android:layout_width="80dp"
                 android:layout_height="95dp"
-                android:text="4"
                 android:layout_marginStart="10dp"
-                android:textColor="@color/textColor"
-                android:textSize="37sp"
                 android:fontFamily="@font/poppins_medium"
-                android:textAlignment="center"
-                android:tag="03"
                 android:onClick="btnClick"
-                />
+                android:tag="03"
+                android:text="4"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="37sp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -165,52 +189,52 @@
                 android:id="@+id/button5"
                 android:layout_width="80dp"
                 android:layout_height="95dp"
+                android:fontFamily="@font/poppins_medium"
+                android:onClick="btnClick"
+                android:tag="10"
                 android:text="5"
                 android:textColor="@color/textColor"
-                android:textSize="37sp"
-                android:fontFamily="@font/poppins_medium"
-                android:tag="10"
-                android:onClick="btnClick"
-                />
+                android:textSize="37sp" />
+
             <Button
                 android:id="@+id/button6"
                 android:layout_width="80dp"
                 android:layout_height="95dp"
-                android:text="6"
-                android:textColor="@color/textColor"
-                android:textSize="37sp"
-                android:fontFamily="@font/poppins_medium"
-                android:textAlignment="center"
                 android:layout_marginHorizontal="10dp"
-                android:tag="11"
+                android:fontFamily="@font/poppins_medium"
                 android:onClick="btnClick"
-                />
+                android:tag="11"
+                android:text="6"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="37sp" />
+
             <Button
                 android:id="@+id/button7"
                 android:layout_width="80dp"
                 android:layout_height="95dp"
-                android:text="7"
-                android:textColor="@color/textColor"
-                android:textSize="37sp"
                 android:fontFamily="@font/poppins_medium"
-                android:textAlignment="center"
-                android:tag="12"
                 android:onClick="btnClick"
-                />
+                android:tag="12"
+                android:text="7"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="37sp" />
+
             <Button
                 android:id="@+id/button8"
                 android:layout_width="80dp"
                 android:layout_height="95dp"
-                android:text="8"
                 android:layout_marginStart="10dp"
-                android:textColor="@color/textColor"
-                android:textSize="37sp"
                 android:fontFamily="@font/poppins_medium"
-                android:textAlignment="center"
-                android:tag="13"
                 android:onClick="btnClick"
-                />
+                android:tag="13"
+                android:text="8"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="37sp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -220,52 +244,52 @@
                 android:id="@+id/button9"
                 android:layout_width="80dp"
                 android:layout_height="95dp"
+                android:fontFamily="@font/poppins_medium"
+                android:onClick="btnClick"
+                android:tag="20"
                 android:text="9"
                 android:textColor="@color/textColor"
-                android:textSize="37sp"
-                android:fontFamily="@font/poppins_medium"
-                android:tag="20"
-                android:onClick="btnClick"
-                />
+                android:textSize="37sp" />
+
             <Button
                 android:id="@+id/button10"
                 android:layout_width="80dp"
                 android:layout_height="95dp"
-                android:text="10"
-                android:textColor="@color/textColor"
-                android:textSize="37sp"
-                android:fontFamily="@font/poppins_medium"
-                android:textAlignment="center"
                 android:layout_marginHorizontal="10dp"
-                android:tag="21"
+                android:fontFamily="@font/poppins_medium"
                 android:onClick="btnClick"
-                />
+                android:tag="21"
+                android:text="10"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="37sp" />
+
             <Button
                 android:id="@+id/button11"
                 android:layout_width="80dp"
                 android:layout_height="95dp"
-                android:text="11"
-                android:textColor="@color/textColor"
-                android:textSize="37sp"
                 android:fontFamily="@font/poppins_medium"
-                android:textAlignment="center"
-                android:tag="22"
                 android:onClick="btnClick"
-                />
+                android:tag="22"
+                android:text="11"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="37sp" />
+
             <Button
                 android:id="@+id/button12"
                 android:layout_width="80dp"
                 android:layout_height="95dp"
-                android:text="12"
                 android:layout_marginStart="10dp"
-                android:textColor="@color/textColor"
-                android:textSize="37sp"
                 android:fontFamily="@font/poppins_medium"
-                android:textAlignment="center"
-                android:tag="23"
                 android:onClick="btnClick"
-                />
+                android:tag="23"
+                android:text="12"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="37sp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -275,50 +299,49 @@
                 android:id="@+id/button13"
                 android:layout_width="80dp"
                 android:layout_height="95dp"
+                android:fontFamily="@font/poppins_medium"
+                android:onClick="btnClick"
+                android:tag="30"
                 android:text="13"
                 android:textColor="@color/textColor"
-                android:textSize="37sp"
-                android:fontFamily="@font/poppins_medium"
-                android:tag="30"
-                android:onClick="btnClick"
-                />
+                android:textSize="37sp" />
+
             <Button
                 android:id="@+id/button14"
                 android:layout_width="80dp"
                 android:layout_height="95dp"
-                android:text="14"
-                android:textColor="@color/textColor"
-                android:textSize="37sp"
-                android:fontFamily="@font/poppins_medium"
-                android:textAlignment="center"
                 android:layout_marginHorizontal="10dp"
-                android:tag="31"
+                android:fontFamily="@font/poppins_medium"
                 android:onClick="btnClick"
-                />
+                android:tag="31"
+                android:text="14"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="37sp" />
+
             <Button
                 android:id="@+id/button15"
                 android:layout_width="80dp"
                 android:layout_height="95dp"
-                android:text="15"
-                android:textColor="@color/textColor"
-                android:textSize="37sp"
                 android:fontFamily="@font/poppins_medium"
-                android:textAlignment="center"
-                android:tag="32"
                 android:onClick="btnClick"
-                />
+                android:tag="32"
+                android:text="15"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="37sp" />
+
             <Button
                 android:id="@+id/button16"
                 android:layout_width="80dp"
                 android:layout_height="95dp"
                 android:layout_marginStart="10dp"
-                android:textColor="@color/textColor"
-                android:textSize="37sp"
                 android:fontFamily="@font/poppins_medium"
-                android:textAlignment="center"
-                android:tag="33"
                 android:onClick="btnClick"
-                />
+                android:tag="33"
+                android:textAlignment="center"
+                android:textColor="@color/textColor"
+                android:textSize="37sp" />
         </LinearLayout>
     </LinearLayout>
 
