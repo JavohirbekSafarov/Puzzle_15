@@ -1,10 +1,12 @@
 package com.javohirbekcoder.puzzle15;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,7 +34,8 @@ public class GameActivity extends AppCompatActivity {
             R.id.button11, R.id.button12, R.id.button13, R.id.button14,
             R.id.button15, R.id.button16};
 
-    private Dialog goBackDialog;
+    private Dialog goBackDialog, winDialog;
+    private boolean isTimerRunning = false;
 
 
     @Override
@@ -47,8 +50,14 @@ public class GameActivity extends AppCompatActivity {
         loadNumbers();
         generateNumbers();
         loadDataToViews();
+        loadDialogs();
+    }
 
+    private void loadDialogs() {
+        winDialog = new Dialog(GameActivity.this);
         goBackDialog = new Dialog(GameActivity.this);
+
+        winDialog.setCancelable(false);
     }
 
     private void callGoBackDialog() {
@@ -58,13 +67,14 @@ public class GameActivity extends AppCompatActivity {
         goBackDialog.show();
         yesBtn.setOnClickListener(v -> super.onBackPressed());
         noBtn.setOnClickListener(v -> goBackDialog.dismiss());
-
     }
+
 
     private void loadTimer() {
         timer = new CountDownTimer(30 * 60 * 1000, 1000) { //30 minut
             @Override
             public void onTick(long millisUntilFinished) {
+                isTimerRunning = true;
                 timeCount++;
                 int second = timeCount % 60;
                 int minute = timeCount / 60;
@@ -79,10 +89,11 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 if (!isWin) {
+                    isTimerRunning = false;
                     Toast.makeText(GameActivity.this, "You are lose!", Toast.LENGTH_SHORT).show();
                 }
             }
-        }.start();
+        };
     }
 
     private void loadDataToViews() {
@@ -167,12 +178,44 @@ public class GameActivity extends AppCompatActivity {
 
         if (isWin) {
             Toast.makeText(this, "Win!! moves" + moves, Toast.LENGTH_SHORT).show();
+            callWinDialog(moves, binding.timeTv.getText().toString());
             timer.cancel();
         }
+    }
+
+    private void callWinDialog(int moves, String time) {
+        winDialog.setContentView(R.layout.win_dialog);
+        Button home = winDialog.findViewById(R.id.homeBtn);
+        Button newgame = winDialog.findViewById(R.id.newGameBtn);
+        TextView timeTvDialog = winDialog.findViewById(R.id.timeTvDialog);
+        TextView movesTvDialod = winDialog.findViewById(R.id.movesTvDialog);
+        timeTvDialog.setText("Time: " + time);
+        movesTvDialod.setText("Moves: " + (moves + 1));
+        winDialog.show();
+        home.setOnClickListener(v -> super.onBackPressed());
+        newgame.setOnClickListener(v -> {
+            winDialog.dismiss();
+            startActivity(new Intent(getApplicationContext(), GameActivity.class));
+            finish();
+        });
     }
 
     @Override
     public void onBackPressed() {
         callGoBackDialog();
+    }
+
+    @Override
+    protected void onPause() {
+        timer.cancel();
+        isTimerRunning = false;
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        if (!isTimerRunning)
+            timer.start();
+        super.onResume();
     }
 }
