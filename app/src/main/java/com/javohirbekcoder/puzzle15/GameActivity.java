@@ -59,6 +59,7 @@ public class GameActivity extends AppCompatActivity {
             moves = 0;
             binding.movesTv.setText(String.valueOf(moves));
         });
+
         loadTimer();
         loadViews();
         loadNumbers();
