@@ -38,7 +38,7 @@ public class GameActivity extends AppCompatActivity {
     private Dialog goBackDialog, winDialog;
     private boolean isTimerRunning = false;
 
-    private SharedPreferences   sharedPreferences;
+    private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private int bestRecordMoves;
 
@@ -49,41 +49,25 @@ public class GameActivity extends AppCompatActivity {
         binding = ActivityGameBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        tiles = new int[16];
+
         binding.goBackbtn.setOnClickListener(v -> onBackPressed());
-        binding.shuffleBtn.setOnClickListener(v -> generateNumbers());
+        binding.shuffleBtn.setOnClickListener(v -> {
+            generateNumbers();
+            timeCount = 0;
+            loadTimer();
+            moves = 0;
+            binding.movesTv.setText(String.valueOf(moves));
+        });
         loadTimer();
         loadViews();
         loadNumbers();
         generateNumbers();
+        loadDataToViews();
         loadDialogs();
         loadBestRecord();
     }
 
-    private void loadBestRecord() {
-        sharedPreferences = getSharedPreferences("records", MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        bestRecordMoves = sharedPreferences.getInt("recordMoves", 99999999);
-        if (bestRecordMoves == 99999999)
-            binding.recordTV.setText("You have not best record!");
-        else
-            binding.recordTV.setText("Best record: " + bestRecordMoves);
-    }
-
-    private void loadDialogs() {
-        winDialog = new Dialog(GameActivity.this);
-        goBackDialog = new Dialog(GameActivity.this);
-
-        winDialog.setCancelable(false);
-    }
-
-    private void callGoBackDialog() {
-        goBackDialog.setContentView(R.layout.go_back_dialog);
-        Button yesBtn = goBackDialog.findViewById(R.id.yesBtn);
-        Button noBtn = goBackDialog.findViewById(R.id.noBtn);
-        goBackDialog.show();
-        yesBtn.setOnClickListener(v -> super.onBackPressed());
-        noBtn.setOnClickListener(v -> goBackDialog.dismiss());
-    }
 
 
     private void loadTimer() {
@@ -99,7 +83,6 @@ public class GameActivity extends AppCompatActivity {
                         .repeat(0)
                         .playOn(findViewById(R.id.timeTv));
                 binding.timeTv.setText(String.format("%02d:%02d", minute, second));
-                //binding.timeTv.setText(String.format("%02d:%02d:%02d", hour, minute, second));
             }
 
             @Override
@@ -112,13 +95,17 @@ public class GameActivity extends AppCompatActivity {
         };
     }
 
-    private void loadDataToViews() {
-        emptyX = 3;
-        emptyY = 3;
+    private void loadViews() {
+        buttons = new Button[4][4];
         for (int i = 0; i < 16; i++) {
-            buttons[i / 4][i % 4].setText(String.valueOf(tiles[i]));
+            buttons[i / 4][i % 4] = (Button) findViewById(btnIds[i]);
         }
-        buttons[emptyX][emptyY].setText("");
+    }
+
+    private void loadNumbers() {
+        for (int i = 0; i < 16; i++) {
+            tiles[i] = i + 1;
+        }
     }
 
     private void generateNumbers() {
@@ -135,6 +122,42 @@ public class GameActivity extends AppCompatActivity {
             generateNumbers();
     }
 
+    private void loadDialogs() {
+        winDialog = new Dialog(GameActivity.this);
+        goBackDialog = new Dialog(GameActivity.this);
+        winDialog.setCancelable(false);
+    }
+
+    private void loadBestRecord() {
+        sharedPreferences = getSharedPreferences("records", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        bestRecordMoves = sharedPreferences.getInt("recordMoves", 99999999);
+        if (bestRecordMoves == 99999999)
+            binding.recordTV.setText("You have not best record!");
+        else
+            binding.recordTV.setText("Best record: " + bestRecordMoves);
+    }
+
+
+
+    private void callGoBackDialog() {
+        goBackDialog.setContentView(R.layout.go_back_dialog);
+        Button yesBtn = goBackDialog.findViewById(R.id.yesBtn);
+        Button noBtn = goBackDialog.findViewById(R.id.noBtn);
+        goBackDialog.show();
+        yesBtn.setOnClickListener(v -> super.onBackPressed());
+        noBtn.setOnClickListener(v -> goBackDialog.dismiss());
+    }
+
+    private void loadDataToViews() {
+        emptyX = 3;
+        emptyY = 3;
+        for (int i = 0; i < 16; i++) {
+            buttons[i / 4][i % 4].setText(String.valueOf(tiles[i]));
+        }
+        buttons[emptyX][emptyY].setText("");
+    }
+
     private boolean isSolvable() {
         int countInversions = 0;
         for (int i = 0; i < 15; i++) {
@@ -145,21 +168,6 @@ public class GameActivity extends AppCompatActivity {
         }
         return countInversions % 2 == 0;
     }
-
-    private void loadNumbers() {
-        tiles = new int[16];
-        for (int i = 0; i < 16; i++) {
-            tiles[i] = i + 1;
-        }
-    }
-
-    private void loadViews() {
-        buttons = new Button[4][4];
-        for (int i = 0; i < 16; i++) {
-            buttons[i / 4][i % 4] = (Button) findViewById(btnIds[i]);
-        }
-    }
-
 
     public void btnClick(View view) {
         Button button = (Button) view;
@@ -176,7 +184,8 @@ public class GameActivity extends AppCompatActivity {
                     .duration(700)
                     .repeat(0)
                     .playOn(findViewById(R.id.movesTv));
-            binding.movesTv.setText(String.valueOf(++moves));
+            moves++;
+            binding.movesTv.setText(String.valueOf(moves));
         }
     }
 
