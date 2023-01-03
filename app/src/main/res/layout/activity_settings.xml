@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/rootLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/secondaryColor"
+    tools:ignore="HardcodedText"
     tools:context=".SettingsActivity">
 
     <LinearLayout
@@ -16,6 +19,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <RadioGroup
+            android:id="@+id/difficultyRG"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
@@ -32,34 +36,48 @@
                 android:fontFamily="@font/poppins_medium"
                 android:text="Select difficulty:"
                 android:textColor="@color/textColor"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                />
 
             <RadioButton
+                android:id="@+id/easyRB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_medium"
-                android:text="Easy"
+                android:text="Easy  (30 min)"
                 android:textColor="#0f0"
                 android:textSize="18sp" />
 
             <RadioButton
+                android:id="@+id/normalRB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_medium"
-                android:text="Normal"
+                android:text="Normal    (15 min)"
                 android:textColor="#ff0"
                 android:textSize="18sp" />
 
             <RadioButton
+                android:id="@+id/hardRB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_medium"
-                android:text="Hard"
+                android:text="Hard  (3 min)"
                 android:textColor="#f00"
                 android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:fontFamily="@font/poppins_medium"
+                android:text="( game duration )   "
+                android:textColor="@color/textColor"
+                android:textSize="15sp"/>
         </RadioGroup>
 
         <RadioGroup
+            android:id="@+id/gameModeRG"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
@@ -79,6 +97,7 @@
                 android:textSize="18sp" />
 
             <RadioButton
+                android:id="@+id/threeRB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_medium"
@@ -87,16 +106,26 @@
                 android:textSize="18sp" />
 
             <RadioButton
+                android:id="@+id/fourRB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_medium"
                 android:text="4x4"
                 android:textColor="@color/textColor"
                 android:textSize="18sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:fontFamily="@font/poppins_medium"
+                android:text="( tiles layout )   "
+                android:textColor="@color/textColor"
+                android:textSize="15sp"/>
         </RadioGroup>
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/saveFB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -108,6 +137,7 @@
         android:text="Save settings"
         app:icon="@drawable/ic_baseline_save_24"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:targetApi="p" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

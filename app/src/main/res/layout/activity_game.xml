@@ -107,6 +107,7 @@
                 android:id="@+id/timeTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="2dp"
                 android:fontFamily="@font/poppins_medium"
                 android:text="0:00"
                 android:textColor="@color/textColor"

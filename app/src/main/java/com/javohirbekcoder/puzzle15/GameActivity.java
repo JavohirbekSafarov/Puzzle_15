@@ -3,6 +3,7 @@ package com.javohirbekcoder.puzzle15;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.google.android.material.snackbar.Snackbar;
 import com.javohirbekcoder.puzzle15.databinding.ActivityGameBinding;
 
 import java.util.Random;
@@ -40,6 +42,7 @@ public class GameActivity extends AppCompatActivity {
     private Dialog goBackDialog, winDialog;
     private boolean isTimerRunning = false;
 
+    private int timerUntill = 30;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private int bestRecordMoves;
@@ -55,21 +58,13 @@ public class GameActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         tiles = new int[16];
+        timerUntill = getIntent().getIntExtra("timeUntill", 30);
 
         binding.goBackbtn.setOnClickListener(v -> onBackPressed());
         binding.shuffleBtn.setOnClickListener(v -> {
-            emptyX = 3;
-            emptyY = 3;
-            timeCount = 0;
-            moves = 0;
-            loadNumbers();
-            generateNumbers();
-            loadTimer(30);
-            binding.movesTv.setText(String.valueOf(moves));
-            saveMoves();
+            resetAll();
         });
 
-        loadTimer(30);
         loadViews();
         loadNumbers();
         generateNumbers();
@@ -77,8 +72,13 @@ public class GameActivity extends AppCompatActivity {
         loadDialogs();
         loadBestRecord();
         loadArray();
+
+        showMessage("Salom olam");
     }
 
+    private void showMessage(String message) {
+        Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT).setTextColor(Color.parseColor("#ffffff")).setBackgroundTint(Color.parseColor("#00664A")).show();
+    }
 
 
     public void loadArray(){
@@ -92,7 +92,7 @@ public class GameActivity extends AppCompatActivity {
             binding.movesTv.setText(String.valueOf(moves));
 
             timeCount = sharedPreferences.getInt("time", 0);
-            loadTimer(3030);
+
 
             for (int i = 0; i < 16; i++) {
                 if (sharedPreferences.getString(arrayName + "_" + i, "").equals("0")){
@@ -104,6 +104,7 @@ public class GameActivity extends AppCompatActivity {
             Toast.makeText(this, "Your moves restored!", Toast.LENGTH_SHORT).show();
             loadDataToViews();
         }
+        loadTimer(timerUntill);
     }
 
     public boolean saveArray(String[] array) {
@@ -121,7 +122,8 @@ public class GameActivity extends AppCompatActivity {
 
 
     private void loadTimer(int timeMinutes) {
-        timer = new CountDownTimer(timeMinutes * 60 * 1000, 1000) { //30 minut
+        Toast.makeText(this, "gave time = " + timeMinutes, Toast.LENGTH_SHORT).show();
+        timer = new CountDownTimer((long) timeMinutes * 60 * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 isTimerRunning = true;
@@ -139,7 +141,7 @@ public class GameActivity extends AppCompatActivity {
             public void onFinish() {
                 if (!isWin) {
                     isTimerRunning = false;
-                    Toast.makeText(GameActivity.this, "You are lose!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(GameActivity.this, "You are lose!", Toast.LENGTH_LONG).show();
                 }
             }
         };
@@ -187,8 +189,6 @@ public class GameActivity extends AppCompatActivity {
         else
             binding.recordTV.setText("Best record: " + bestRecordMoves);
     }
-
-
 
     private void callGoBackDialog() {
         goBackDialog.setContentView(R.layout.go_back_dialog);
@@ -316,7 +316,7 @@ public class GameActivity extends AppCompatActivity {
         moves = 0;
         loadNumbers();
         generateNumbers();
-        loadTimer(30);
+        loadTimer(timerUntill);
         binding.movesTv.setText(String.valueOf(moves));
         saveMoves();
     }
