@@ -1,40 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@drawable/background1">
+    android:background="@drawable/background1"
+    tools:context=".MainActivity">
 
     <FrameLayout
         android:id="@+id/menu_closed"
-        android:onClick="menuOpen"
-        android:layout_marginTop="40dp"
-        android:layout_width="40dp"
+        android:layout_width="45dp"
         android:layout_height="45dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/frame_back"
+        android:onClick="menuOpen"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="invisible">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/arrowIV"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/ic_arrow_right"
-            app:tint="#fff"
-            />
+            app:tint="#fff" />
     </FrameLayout>
 
     <FrameLayout
         android:id="@+id/menu_opened"
-        android:visibility="visible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
         android:background="@drawable/frame_back2"
-        android:layout_marginTop="40dp"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -42,67 +40,84 @@
             android:id="@+id/asosiyLinear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_margin="5dp">
+            android:layout_margin="8dp"
+            android:orientation="vertical">
+
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
                 android:onClick="menuClose"
                 android:orientation="horizontal">
+
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:src="@drawable/ic_arrow_left"
                     app:tint="#fff" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5dp"
+                    android:fontFamily="@font/poppins_medium"
                     android:text="Close"
                     android:textColor="@color/white"
-                    android:layout_marginStart="5dp"
-                    android:textStyle="bold"
-                    android:layout_gravity="center_vertical"/>
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="10dp"
-                android:layout_width="wrap_content"
+                android:id="@+id/infoBtn"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
+                android:layout_marginTop="12dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:orientation="horizontal">
+
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:src="@drawable/ic_info"
                     app:tint="#fff" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5dp"
+                    android:fontFamily="@font/poppins_medium"
                     android:text="Info"
                     android:textColor="@color/white"
-                    android:layout_marginStart="5dp"
-                    android:textStyle="bold"
-                    android:layout_gravity="center_vertical"/>
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="10dp"
-                android:layout_width="wrap_content"
+                android:id="@+id/settingsBtn"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
                 android:orientation="horizontal">
+
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:src="@drawable/ic_settings"
                     app:tint="#fff" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5dp"
+                    android:fontFamily="@font/poppins_medium"
                     android:text="Settings"
                     android:textColor="@color/white"
-                    android:layout_marginStart="5dp"
-                    android:textStyle="bold"
-                    android:layout_gravity="center_vertical"/>
+                    android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>
@@ -125,12 +140,13 @@
         android:text="Welcome"
         android:textColor="@color/textColor"
         android:textSize="30sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="@+id/textView5"
-        app:layout_constraintHorizontal_bias="0.134"
+        app:layout_constraintHorizontal_bias="0.683"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.957" />
+        app:layout_constraintVertical_bias="0.843" />
 
     <TextView
         android:id="@+id/textView5"
@@ -153,16 +169,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="216dp"
+        android:elevation="4dp"
         android:fontFamily="@font/poppins_medium"
         android:text="@string/app_name"
         android:textColor="@color/textColor"
-        android:elevation="4dp"
         android:textSize="50sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
 
     <ImageView
@@ -183,6 +198,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="7dp"
         android:text="@string/version"
+        android:textColor="@android:color/darker_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

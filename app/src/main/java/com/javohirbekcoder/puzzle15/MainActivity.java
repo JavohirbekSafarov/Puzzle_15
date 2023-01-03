@@ -1,17 +1,10 @@
 package com.javohirbekcoder.puzzle15;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-
-import com.javohirbekcoder.puzzle15.databinding.ActivityGameBinding;
+import androidx.appcompat.app.AppCompatActivity;
 import com.javohirbekcoder.puzzle15.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,6 +19,9 @@ public class MainActivity extends AppCompatActivity {
         binding.playGamebtn.setOnClickListener(v -> {
             startActivity(new Intent(getApplicationContext(), GameActivity.class));
         });
+        binding.settingsBtn.setOnClickListener(v ->{
+            startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+        });
     }
 
     public void menuOpen(View view) {
@@ -36,6 +32,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void menuClose(View view) {
+        binding.asosiyLinear.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.alpa_minus));
+        binding.menuOpened.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.menu_closing));
+        binding.menuOpened.setVisibility(View.INVISIBLE);
+        binding.menuClosed.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         binding.asosiyLinear.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.alpa_minus));
         binding.menuOpened.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.menu_closing));
         binding.menuOpened.setVisibility(View.INVISIBLE);

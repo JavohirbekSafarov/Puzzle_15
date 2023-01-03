@@ -64,12 +64,12 @@ public class GameActivity extends AppCompatActivity {
             moves = 0;
             loadNumbers();
             generateNumbers();
-            loadTimer();
+            loadTimer(30);
             binding.movesTv.setText(String.valueOf(moves));
             saveMoves();
         });
 
-        loadTimer();
+        loadTimer(30);
         loadViews();
         loadNumbers();
         generateNumbers();
@@ -92,7 +92,7 @@ public class GameActivity extends AppCompatActivity {
             binding.movesTv.setText(String.valueOf(moves));
 
             timeCount = sharedPreferences.getInt("time", 0);
-            loadTimer();
+            loadTimer(3030);
 
             for (int i = 0; i < 16; i++) {
                 if (sharedPreferences.getString(arrayName + "_" + i, "").equals("0")){
@@ -120,8 +120,8 @@ public class GameActivity extends AppCompatActivity {
 
 
 
-    private void loadTimer() {
-        timer = new CountDownTimer(30 * 60 * 1000, 1000) { //30 minut
+    private void loadTimer(int timeMinutes) {
+        timer = new CountDownTimer(timeMinutes * 60 * 1000, 1000) { //30 minut
             @Override
             public void onTick(long millisUntilFinished) {
                 isTimerRunning = true;
@@ -316,7 +316,7 @@ public class GameActivity extends AppCompatActivity {
         moves = 0;
         loadNumbers();
         generateNumbers();
-        loadTimer();
+        loadTimer(30);
         binding.movesTv.setText(String.valueOf(moves));
         saveMoves();
     }
