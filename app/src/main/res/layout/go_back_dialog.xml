@@ -31,7 +31,7 @@
         android:fontFamily="@font/poppins_medium"
         android:text="Do you want exit?"
         android:textColor="@color/textColor"
-        android:textSize="20sp"
+        android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

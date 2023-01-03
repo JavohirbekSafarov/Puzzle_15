@@ -8,6 +8,7 @@
     <color name="matchingPaletteColor">#2C7DC2</color>
     <color name="thirdColor">#C98430</color>
     <color name="foruthColor">#1D1D35</color>
+    <color name="shuffleBtnColor">#00684B</color>
 
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>

@@ -21,6 +21,8 @@ import java.util.Random;
 public class GameActivity extends AppCompatActivity {
 
     private ActivityGameBinding binding;
+    private final String arrayName = "savedTiles";
+
     private int moves = 0;
     private int emptyX = 3;
     private int emptyY = 3;
@@ -42,6 +44,9 @@ public class GameActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private int bestRecordMoves;
 
+    private boolean isFirstOpen = true;
+    private String[] tilesArray;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +58,15 @@ public class GameActivity extends AppCompatActivity {
 
         binding.goBackbtn.setOnClickListener(v -> onBackPressed());
         binding.shuffleBtn.setOnClickListener(v -> {
-            generateNumbers();
+            emptyX = 3;
+            emptyY = 3;
             timeCount = 0;
-            loadTimer();
             moves = 0;
+            loadNumbers();
+            generateNumbers();
+            loadTimer();
             binding.movesTv.setText(String.valueOf(moves));
+            saveMoves();
         });
 
         loadTimer();
@@ -67,6 +76,46 @@ public class GameActivity extends AppCompatActivity {
         loadDataToViews();
         loadDialogs();
         loadBestRecord();
+        loadArray();
+    }
+
+
+
+    public void loadArray(){
+        SharedPreferences sharedPreferences = this.getSharedPreferences("saveTiles", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        isFirstOpen = sharedPreferences.getBoolean("isFirstOpen", true);
+
+        if (!isFirstOpen){
+            moves = sharedPreferences.getInt("moves", 0);
+            binding.movesTv.setText(String.valueOf(moves));
+
+            timeCount = sharedPreferences.getInt("time", 0);
+            loadTimer();
+
+            for (int i = 0; i < 16; i++) {
+                if (sharedPreferences.getString(arrayName + "_" + i, "").equals("0")){
+                    emptyX = i / 4;
+                    emptyY = i % 4;
+                }
+                tiles[i] = Integer.parseInt(sharedPreferences.getString(arrayName + "_" + i, ""));
+            }
+            Toast.makeText(this, "Your moves restored!", Toast.LENGTH_SHORT).show();
+            loadDataToViews();
+        }
+    }
+
+    public boolean saveArray(String[] array) {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("saveTiles", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        for(int i=0;i<array.length;i++){
+            editor.putString(arrayName + "_" + i, array[i]);
+        }
+        editor.putInt("time", timeCount);
+        editor.putInt("moves", moves);
+        editor.putBoolean("isFirstOpen", false);
+        return editor.commit();
     }
 
 
@@ -146,13 +195,26 @@ public class GameActivity extends AppCompatActivity {
         Button yesBtn = goBackDialog.findViewById(R.id.yesBtn);
         Button noBtn = goBackDialog.findViewById(R.id.noBtn);
         goBackDialog.show();
-        yesBtn.setOnClickListener(v -> super.onBackPressed());
+        yesBtn.setOnClickListener(v -> {
+            tilesArray = new String[16];
+            for (int i = 0; i < 16; i++) {
+                Button btn = (Button) findViewById(btnIds[i]);
+                if (btn.getText() == null || btn.getText() == ""){
+                    tilesArray[i] = "0";
+                }else
+                    tilesArray[i] = String.valueOf(btn.getText());
+            }
+
+            if (saveArray(tilesArray))
+                Toast.makeText(this, "Saved your moves!", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(this, "Error saving data!", Toast.LENGTH_SHORT).show();
+            super.onBackPressed();
+        });
         noBtn.setOnClickListener(v -> goBackDialog.dismiss());
     }
 
     private void loadDataToViews() {
-        emptyX = 3;
-        emptyY = 3;
         for (int i = 0; i < 16; i++) {
             buttons[i / 4][i % 4].setText(String.valueOf(tiles[i]));
         }
@@ -188,6 +250,20 @@ public class GameActivity extends AppCompatActivity {
             moves++;
             binding.movesTv.setText(String.valueOf(moves));
         }
+
+        saveMoves();
+    }
+
+    private void saveMoves() {
+        tilesArray = new String[16];
+        for (int i = 0; i < 16; i++) {
+            Button btn = (Button) findViewById(btnIds[i]);
+            if (btn.getText() == null || btn.getText() == ""){
+                tilesArray[i] = "0";
+            }else
+                tilesArray[i] = String.valueOf(btn.getText());
+        }
+        saveArray(tilesArray);
     }
 
     private void checkWin() {
@@ -226,10 +302,23 @@ public class GameActivity extends AppCompatActivity {
         winDialog.show();
         home.setOnClickListener(v -> super.onBackPressed());
         newgame.setOnClickListener(v -> {
+            resetAll();
             winDialog.dismiss();
             startActivity(new Intent(getApplicationContext(), GameActivity.class));
             finish();
         });
+    }
+
+    private void resetAll() {
+        emptyX = 3;
+        emptyY = 3;
+        timeCount = 0;
+        moves = 0;
+        loadNumbers();
+        generateNumbers();
+        loadTimer();
+        binding.movesTv.setText(String.valueOf(moves));
+        saveMoves();
     }
 
     @Override
