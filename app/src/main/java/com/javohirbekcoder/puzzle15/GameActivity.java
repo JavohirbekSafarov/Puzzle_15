@@ -1,9 +1,12 @@
 package com.javohirbekcoder.puzzle15;
 
+import static com.javohirbekcoder.puzzle15.MainActivity.wins;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -39,7 +42,7 @@ public class GameActivity extends AppCompatActivity {
             R.id.button11, R.id.button12, R.id.button13, R.id.button14,
             R.id.button15, R.id.button16};
 
-    private Dialog goBackDialog, winDialog;
+    private Dialog goBackDialog, winDialog, loseDialog;
     private boolean isTimerRunning = false;
 
     private int timerUntill = 30;
@@ -49,7 +52,7 @@ public class GameActivity extends AppCompatActivity {
 
     private boolean isFirstOpen = true;
     private String[] tilesArray;
-
+    Database database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +75,6 @@ public class GameActivity extends AppCompatActivity {
         loadDialogs();
         loadBestRecord();
         loadArray();
-
-        showMessage("Salom olam");
     }
 
     private void showMessage(String message) {
@@ -102,6 +103,7 @@ public class GameActivity extends AppCompatActivity {
                 tiles[i] = Integer.parseInt(sharedPreferences.getString(arrayName + "_" + i, ""));
             }
             Toast.makeText(this, "Your moves restored!", Toast.LENGTH_SHORT).show();
+            showMessage("Your moves restored!");
             loadDataToViews();
         }
         loadTimer(timerUntill);
@@ -122,7 +124,7 @@ public class GameActivity extends AppCompatActivity {
 
 
     private void loadTimer(int timeMinutes) {
-        Toast.makeText(this, "gave time = " + timeMinutes, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "" + timeMinutes, Toast.LENGTH_SHORT).show();
         timer = new CountDownTimer((long) timeMinutes * 60 * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -141,7 +143,7 @@ public class GameActivity extends AppCompatActivity {
             public void onFinish() {
                 if (!isWin) {
                     isTimerRunning = false;
-                    Toast.makeText(GameActivity.this, "You are lose!", Toast.LENGTH_LONG).show();
+                    callLoseDialog();
                 }
             }
         };
@@ -176,8 +178,15 @@ public class GameActivity extends AppCompatActivity {
 
     private void loadDialogs() {
         winDialog = new Dialog(GameActivity.this);
-        goBackDialog = new Dialog(GameActivity.this);
         winDialog.setCancelable(false);
+        winDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        goBackDialog = new Dialog(GameActivity.this);
+        goBackDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        loseDialog = new Dialog(GameActivity.this);
+        loseDialog.setCancelable(false);
+        loseDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
     }
 
     private void loadBestRecord() {
@@ -280,6 +289,9 @@ public class GameActivity extends AppCompatActivity {
         }
 
         if (isWin) {
+
+            saveWins();
+
             if (bestRecordMoves > moves){
                 int movesOrginal = moves + 1;
                 editor.putInt("recordMoves", movesOrginal);
@@ -289,6 +301,18 @@ public class GameActivity extends AppCompatActivity {
             callWinDialog(moves, binding.timeTv.getText().toString());
             timer.cancel();
         }
+    }
+
+    private void saveWins() {
+        SharedPreferences prefsDatabase = this.getSharedPreferences("settings", MODE_PRIVATE);
+        SharedPreferences.Editor editorDatabase = prefsDatabase.edit();
+        database = new Database(prefsDatabase);
+        database.loadSettings();
+        wins = database.getWins();
+        wins++;
+        Toast.makeText(this, "" + wins, Toast.LENGTH_SHORT).show();
+        database.setWins(wins);
+        database.saveWins();
     }
 
     private void callWinDialog(int moves, String time) {
@@ -304,9 +328,27 @@ public class GameActivity extends AppCompatActivity {
         newgame.setOnClickListener(v -> {
             resetAll();
             winDialog.dismiss();
-            startActivity(new Intent(getApplicationContext(), GameActivity.class));
+            Intent intent = new Intent(getApplicationContext(), GameActivity.class);
+            intent.putExtra("timeUntill", timerUntill);
+            startActivity(intent);
             finish();
         });
+    }
+
+    private void callLoseDialog(){
+        loseDialog.setContentView(R.layout.lose_dialog);
+        Button homebtn = loseDialog.findViewById(R.id.homeBtn);
+        Button newgamebtn = loseDialog.findViewById(R.id.newGameBtn);
+        homebtn.setOnClickListener(v -> super.onBackPressed());
+        newgamebtn.setOnClickListener(v -> {
+            resetAll();
+            loseDialog.dismiss();
+            Intent intent = new Intent(getApplicationContext(), GameActivity.class);
+            intent.putExtra("timeUntill", timerUntill);
+            startActivity(intent);
+            finish();
+        });
+        loseDialog.show();
     }
 
     private void resetAll() {
@@ -338,5 +380,12 @@ public class GameActivity extends AppCompatActivity {
         if (!isTimerRunning)
             timer.start();
         super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        timer.cancel();
+        isTimerRunning = false;
+        super.onDestroy();
     }
 }

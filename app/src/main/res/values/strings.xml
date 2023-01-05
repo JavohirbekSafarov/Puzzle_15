@@ -2,4 +2,9 @@
     <string name="app_name">Puzzle 15</string>
     <string name="version">v1.3</string>
     <string name="congrantulations">Congratulations!</string>
+    <string name="your_result_is_worse">Your result is worse!</string>
+    <string name="home">Home</string>
+    <string name="new_game">New game</string>
+    <string name="out_of_time_try_to_play_on_easier_mode">Out of time, try to play on easier mode!</string>
+    <string name="info">    The 15 puzzle (also called Gem Puzzle, Boss Puzzle, Game of Fifteen, Mystic Square and many others) is a sliding puzzle having 15 square tiles numbered 1–15 in a frame that is 4 tiles high and 4 tiles wide, leaving one unoccupied tile position. Tiles in the same row or column of the open position can be moved by sliding them horizontally or vertically, respectively. The goal of the puzzle is to place the tiles in numerical order.</string>
 </resources>

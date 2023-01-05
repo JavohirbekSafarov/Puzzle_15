@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_medium"
-        android:text="@string/congrantulations"
+        android:text="@string/your_result_is_worse"
         android:textColor="@color/secondaryTextColor"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,10 +24,11 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_marginTop="12dp"
-        android:src="@drawable/cup"
+        android:src="@drawable/lose_pic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        android:contentDescription="@string/out_of_time_try_to_play_on_easier_mode" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -41,28 +42,17 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView">
 
         <LinearLayout
-            android:layout_width="250dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="10dp"
             android:gravity="center"
             android:orientation="horizontal"
-            android:padding="15dp">
+            android:padding="10dp">
 
             <TextView
-                android:id="@+id/movesTvDialog"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:singleLine="true"
-                android:text="Moves:" />
-
-            <TextView
-                android:id="@+id/timeTvDialog"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:text="Time:" />
+                android:text="@string/out_of_time_try_to_play_on_easier_mode" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -71,6 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="5dp"
+        android:layout_marginHorizontal="5dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -83,18 +74,17 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/matchingPaletteColor"
             android:fontFamily="@font/poppins_medium"
-            android:text="Home" />
+            android:text="@string/home" />
 
         <Button
             android:id="@+id/newGameBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="60dp"
+            android:layout_marginStart="50dp"
             android:backgroundTint="@color/matchingPaletteColor"
             android:fontFamily="@font/poppins_medium"
-            android:text="New game" />
+            android:text="@string/new_game" />
 
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

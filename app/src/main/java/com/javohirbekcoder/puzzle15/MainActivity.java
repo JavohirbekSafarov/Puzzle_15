@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private Database database;
     private int timeUntill = 30;
     private int gameMode = 2;
+    public static int wins = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +41,13 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("timeUntill", timeUntill);
             startActivity(intent);
         });
-        binding.settingsBtn.setOnClickListener(v ->{
-            startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+        binding.settingsBtn.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), SettingsActivity.class)));
+        binding.infoBtn.setOnClickListener(v -> {
+            //startActivity(new Intent(getApplicationContext(), InfoActivity.class));
+            Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
+            intent.putExtra("wins", wins);
+            startActivity(intent);
         });
-
-        showMessage("Salom");
     }
 
     private void showMessage(String message) {
@@ -57,10 +60,10 @@ public class MainActivity extends AppCompatActivity {
         database = new Database(sharedPreferences);
 
         if (database.loadSettings()) {
-            showMessage("Loaded settings");
+            //showMessage("Loaded settings");
             setSettingtoGame();
         }else {
-            showMessage("Setting not loaded");
+            showMessage("Setting are not available...");
         }
     }
 
@@ -73,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
                 gameMode = 2;
                 break;
             default:
-                Toast.makeText(this, "Still null -> Game Mode", Toast.LENGTH_SHORT).show();
                 showMessage("Still null -> Game Mode");
         }
         switch (database.getDifficulty()){
@@ -87,9 +89,10 @@ public class MainActivity extends AppCompatActivity {
                 timeUntill = 3;
                 break;
             default:
-                Toast.makeText(this, "Still null -> Difficulty", Toast.LENGTH_SHORT).show();
                 showMessage("Still null -> Difficulty");
         }
+        wins = database.getWins();
+        Toast.makeText(this, "wins: " + wins, Toast.LENGTH_SHORT).show();
     }
 
     public void menuOpen(View view) {

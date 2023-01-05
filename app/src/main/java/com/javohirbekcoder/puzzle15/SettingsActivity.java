@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.WindowManager;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -40,14 +41,14 @@ public class SettingsActivity extends AppCompatActivity {
                 showMessage("Failed saving!");
         });
 
-        showMessage("salom olam");
+        binding.goBackbtn.setOnClickListener(v-> onBackPressed());
     }
 
     private void showMessage(String message) {
         binding.saveFB.setTranslationY(-130);
         Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT).setTextColor(Color.parseColor("#ffffff")).setBackgroundTint(Color.parseColor("#00664A")).show();
-        // sleep qoyish kk
-        binding.saveFB.setTranslationY(0);
+        Handler handler = new Handler();
+        handler.postDelayed(() -> binding.saveFB.setTranslationY(0), 3100);
     }
 
     private void setDefaultValues() {
@@ -130,6 +131,6 @@ public class SettingsActivity extends AppCompatActivity {
             showMessage("Loaded settings");
             setDefaultValues();
         }else
-            showMessage("Settings not loaded!");
+            showMessage("Setting are not available...");
     }
 }
