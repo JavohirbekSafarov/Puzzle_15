@@ -30,7 +30,7 @@ public class SettingsActivity extends AppCompatActivity {
         binding = ActivitySettingsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        loadComponents();
+        loadComponentsSettings();
 
         binding.saveFB.setOnClickListener(v -> {
             database.setDifficulty(loadDifficulty());
@@ -122,7 +122,7 @@ public class SettingsActivity extends AppCompatActivity {
         return "";
     }
 
-    private void loadComponents() {
+    private void loadComponentsSettings() {
         sharedPreferences = this.getSharedPreferences("settings", MODE_PRIVATE);
         editor = sharedPreferences.edit();
         database = new Database(sharedPreferences);

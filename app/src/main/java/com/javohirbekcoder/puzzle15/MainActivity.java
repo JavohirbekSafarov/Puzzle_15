@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 showMessage("Still null -> Difficulty");
         }
         wins = database.getWins();
-        Toast.makeText(this, "wins: " + wins, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "wins: " + wins, Toast.LENGTH_SHORT).show();
     }
 
     public void menuOpen(View view) {

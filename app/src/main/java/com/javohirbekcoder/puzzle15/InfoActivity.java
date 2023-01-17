@@ -32,6 +32,12 @@ public class InfoActivity extends AppCompatActivity {
             browserIntent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.javohirbekcoder.puzzle15"));
             startActivity(browserIntent);
         });
+        binding.shareApp.setOnClickListener(v -> {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, "Download now: https://play.google.com/store/apps/details?id=com.javohirbekcoder.puzzle15");
+            shareIntent.setType("text/plain");
+            startActivity(shareIntent);
+        });
         setDatasToViews();
     }
 

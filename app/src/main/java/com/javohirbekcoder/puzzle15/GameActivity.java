@@ -124,7 +124,6 @@ public class GameActivity extends AppCompatActivity {
 
 
     private void loadTimer(int timeMinutes) {
-        Toast.makeText(this, "" + timeMinutes, Toast.LENGTH_SHORT).show();
         timer = new CountDownTimer((long) timeMinutes * 60 * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -296,7 +295,7 @@ public class GameActivity extends AppCompatActivity {
                 int movesOrginal = moves + 1;
                 editor.putInt("recordMoves", movesOrginal);
                 editor.apply();
-                Toast.makeText(this, "" + movesOrginal, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "" + movesOrginal, Toast.LENGTH_SHORT).show();
             }
             callWinDialog(moves, binding.timeTv.getText().toString());
             timer.cancel();
@@ -310,7 +309,7 @@ public class GameActivity extends AppCompatActivity {
         database.loadSettings();
         wins = database.getWins();
         wins++;
-        Toast.makeText(this, "" + wins, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "" + wins, Toast.LENGTH_SHORT).show();
         database.setWins(wins);
         database.saveWins();
     }
