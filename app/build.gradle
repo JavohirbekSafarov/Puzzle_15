@@ -4,17 +4,19 @@ plugins {
 
 android {
     namespace 'com.javohirbekcoder.puzzle15'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.javohirbekcoder.puzzle15"
         minSdk 23
-        targetSdk 32
-        versionCode 3
-        versionName "v1.3"
+        targetSdk 33
+        versionCode 5
+        versionName "v1.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    
 
     buildTypes {
         release {
@@ -33,13 +35,14 @@ android {
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.appcompat:appcompat:1.6.0'
     implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.preference:preference:1.2.0'
+    implementation 'com.google.android.gms:play-services-ads:21.4.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation 'com.daimajia.androidanimations:library:2.4@aar'
 
     def lifecycle_version = "2.4.0"

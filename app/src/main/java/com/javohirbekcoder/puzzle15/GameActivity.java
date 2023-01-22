@@ -14,10 +14,18 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.javohirbekcoder.puzzle15.databinding.ActivityGameBinding;
 
@@ -59,6 +67,18 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityGameBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        //region Ads
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+
+        AdView mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        //endregion Ads
 
         tiles = new int[16];
         timerUntill = getIntent().getIntExtra("timeUntill", 30);
@@ -102,7 +122,6 @@ public class GameActivity extends AppCompatActivity {
                 }
                 tiles[i] = Integer.parseInt(sharedPreferences.getString(arrayName + "_" + i, ""));
             }
-            Toast.makeText(this, "Your moves restored!", Toast.LENGTH_SHORT).show();
             showMessage("Your moves restored!");
             loadDataToViews();
         }
@@ -212,11 +231,6 @@ public class GameActivity extends AppCompatActivity {
                 }else
                     tilesArray[i] = String.valueOf(btn.getText());
             }
-
-            if (saveArray(tilesArray))
-                Toast.makeText(this, "Saved your moves!", Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(this, "Error saving data!", Toast.LENGTH_SHORT).show();
             super.onBackPressed();
         });
         noBtn.setOnClickListener(v -> goBackDialog.dismiss());
@@ -295,7 +309,6 @@ public class GameActivity extends AppCompatActivity {
                 int movesOrginal = moves + 1;
                 editor.putInt("recordMoves", movesOrginal);
                 editor.apply();
-                //Toast.makeText(this, "" + movesOrginal, Toast.LENGTH_SHORT).show();
             }
             callWinDialog(moves, binding.timeTv.getText().toString());
             timer.cancel();
@@ -309,7 +322,6 @@ public class GameActivity extends AppCompatActivity {
         database.loadSettings();
         wins = database.getWins();
         wins++;
-        //Toast.makeText(this, "" + wins, Toast.LENGTH_SHORT).show();
         database.setWins(wins);
         database.saveWins();
     }

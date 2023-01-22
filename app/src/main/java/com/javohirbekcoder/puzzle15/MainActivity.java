@@ -1,16 +1,29 @@
 package com.javohirbekcoder.puzzle15;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
+import android.transition.TransitionManager;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.animation.AnimationUtils;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.widget.ViewAnimator;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.javohirbekcoder.puzzle15.databinding.ActivityMainBinding;
 
@@ -28,7 +41,41 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        //region Ads
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+
+        AdView mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        //endregion Ads
+
+        binding.playGamebtn.setEnabled(true);
+
+
         binding.playGamebtn.setOnClickListener(v -> {
+/*
+            //add circular animation
+            int x = binding.getRoot().getWidth() / 2;
+            int y = binding.getRoot().getHeight() * 3 / 4;
+            int startRadius = 0;
+            int endRadius = Math.max(binding.getRoot().getWidth(), binding.getRoot().getHeight());
+            Animator anim = ViewAnimationUtils.createCircularReveal(binding.getRoot(), x,y,startRadius, endRadius).setDuration(500);
+            binding.getRoot().setVisibility(View.VISIBLE);
+            binding.playGamebtn.setEnabled(false);
+            anim.start();
+
+            //add wait until animation finished
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            }, 500);*/
             Intent intent = null;
             switch (gameMode){
                 case 1:
@@ -41,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("timeUntill", timeUntill);
             startActivity(intent);
         });
+
+
         binding.settingsBtn.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), SettingsActivity.class)));
         binding.infoBtn.setOnClickListener(v -> {
             //startActivity(new Intent(getApplicationContext(), InfoActivity.class));
@@ -115,5 +164,6 @@ public class MainActivity extends AppCompatActivity {
         binding.menuOpened.setVisibility(View.INVISIBLE);
         binding.menuClosed.setVisibility(View.VISIBLE);
         loadDatabase();
+        binding.playGamebtn.setEnabled(true);
     }
 }
