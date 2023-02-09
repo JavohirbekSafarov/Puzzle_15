@@ -303,5 +303,6 @@ public class GameActivity3x3 extends AppCompatActivity {
         if (!isTimerRunning)
             timer.start();
         super.onResume();
+
     }
 }
