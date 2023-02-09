@@ -92,7 +92,7 @@
             android:layout_marginStart="60dp"
             android:backgroundTint="@color/matchingPaletteColor"
             android:fontFamily="@font/poppins_medium"
-            android:text="New game" />
+            android:text="Next" />
 
     </LinearLayout>
 

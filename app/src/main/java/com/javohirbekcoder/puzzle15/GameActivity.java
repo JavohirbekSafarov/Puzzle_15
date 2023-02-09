@@ -2,6 +2,8 @@ package com.javohirbekcoder.puzzle15;
 
 import static com.javohirbekcoder.puzzle15.MainActivity.wins;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,22 +12,29 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.material.snackbar.Snackbar;
 import com.javohirbekcoder.puzzle15.databinding.ActivityGameBinding;
 
@@ -58,7 +67,6 @@ public class GameActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private int bestRecordMoves;
 
-    private boolean isFirstOpen = true;
     private String[] tilesArray;
     Database database;
 
@@ -68,17 +76,7 @@ public class GameActivity extends AppCompatActivity {
         binding = ActivityGameBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        //region Ads
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });
-
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-        //endregion Ads
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         tiles = new int[16];
         timerUntill = getIntent().getIntExtra("timeUntill", 30);
@@ -86,8 +84,11 @@ public class GameActivity extends AppCompatActivity {
         binding.goBackbtn.setOnClickListener(v -> onBackPressed());
         binding.shuffleBtn.setOnClickListener(v -> {
             resetAll();
+            loadBannerAd();
+            binding.shuffleBtn.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_shuffle));
         });
 
+        loadBannerAd();
         loadViews();
         loadNumbers();
         generateNumbers();
@@ -97,18 +98,22 @@ public class GameActivity extends AppCompatActivity {
         loadArray();
     }
 
-    private void showMessage(String message) {
-        Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT).setTextColor(Color.parseColor("#ffffff")).setBackgroundTint(Color.parseColor("#00664A")).show();
+    private void loadBannerAd() {
+        MobileAds.initialize(this, initializationStatus -> {
+        });
+
+        AdView mAdView = findViewById(R.id.adView);
+        @SuppressLint("VisibleForTests") AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
-
-    public void loadArray(){
+    public void loadArray() {
         SharedPreferences sharedPreferences = this.getSharedPreferences("saveTiles", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        isFirstOpen = sharedPreferences.getBoolean("isFirstOpen", true);
+        boolean isFirstOpen = sharedPreferences.getBoolean("isFirstOpen", true);
 
-        if (!isFirstOpen){
+        if (!isFirstOpen) {
             moves = sharedPreferences.getInt("moves", 0);
             binding.movesTv.setText(String.valueOf(moves));
 
@@ -116,13 +121,12 @@ public class GameActivity extends AppCompatActivity {
 
 
             for (int i = 0; i < 16; i++) {
-                if (sharedPreferences.getString(arrayName + "_" + i, "").equals("0")){
+                if (sharedPreferences.getString(arrayName + "_" + i, "").equals("0")) {
                     emptyX = i / 4;
                     emptyY = i % 4;
                 }
                 tiles[i] = Integer.parseInt(sharedPreferences.getString(arrayName + "_" + i, ""));
             }
-            showMessage("Your moves restored!");
             loadDataToViews();
         }
         loadTimer(timerUntill);
@@ -131,7 +135,7 @@ public class GameActivity extends AppCompatActivity {
     public boolean saveArray(String[] array) {
         SharedPreferences sharedPreferences = this.getSharedPreferences("saveTiles", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        for(int i=0;i<array.length;i++){
+        for (int i = 0; i < array.length; i++) {
             editor.putString(arrayName + "_" + i, array[i]);
         }
         editor.putInt("time", timeCount);
@@ -139,7 +143,6 @@ public class GameActivity extends AppCompatActivity {
         editor.putBoolean("isFirstOpen", false);
         return editor.commit();
     }
-
 
 
     private void loadTimer(int timeMinutes) {
@@ -217,30 +220,13 @@ public class GameActivity extends AppCompatActivity {
             binding.recordTV.setText("Best record: " + bestRecordMoves);
     }
 
-    private void callGoBackDialog() {
-        goBackDialog.setContentView(R.layout.go_back_dialog);
-        Button yesBtn = goBackDialog.findViewById(R.id.yesBtn);
-        Button noBtn = goBackDialog.findViewById(R.id.noBtn);
-        goBackDialog.show();
-        yesBtn.setOnClickListener(v -> {
-            tilesArray = new String[16];
-            for (int i = 0; i < 16; i++) {
-                Button btn = (Button) findViewById(btnIds[i]);
-                if (btn.getText() == null || btn.getText() == ""){
-                    tilesArray[i] = "0";
-                }else
-                    tilesArray[i] = String.valueOf(btn.getText());
-            }
-            super.onBackPressed();
-        });
-        noBtn.setOnClickListener(v -> goBackDialog.dismiss());
-    }
-
     private void loadDataToViews() {
         for (int i = 0; i < 16; i++) {
             buttons[i / 4][i % 4].setText(String.valueOf(tiles[i]));
+            buttons[i / 4][i % 4].setBackgroundColor(Color.parseColor("#2C7DC2"));
         }
         buttons[emptyX][emptyY].setText("");
+        buttons[emptyX][emptyY].setBackgroundColor(Color.parseColor("#00000000"));
     }
 
     private boolean isSolvable() {
@@ -261,7 +247,9 @@ public class GameActivity extends AppCompatActivity {
 
         if ((Math.abs(emptyX - x) == 1 && emptyY == y) || (Math.abs(emptyY - y) == 1 && emptyX == x)) {
             buttons[emptyX][emptyY].setText(button.getText().toString());
+            buttons[emptyX][emptyY].setBackgroundColor(Color.parseColor("#2C7DC2"));
             button.setText("");
+            button.setBackgroundColor(Color.parseColor("#00000000"));
             emptyX = x;
             emptyY = y;
             checkWin();
@@ -280,9 +268,9 @@ public class GameActivity extends AppCompatActivity {
         tilesArray = new String[16];
         for (int i = 0; i < 16; i++) {
             Button btn = (Button) findViewById(btnIds[i]);
-            if (btn.getText() == null || btn.getText() == ""){
+            if (btn.getText() == null || btn.getText() == "") {
                 tilesArray[i] = "0";
-            }else
+            } else
                 tilesArray[i] = String.valueOf(btn.getText());
         }
         saveArray(tilesArray);
@@ -305,13 +293,14 @@ public class GameActivity extends AppCompatActivity {
 
             saveWins();
 
-            if (bestRecordMoves > moves){
+            if (bestRecordMoves > moves) {
                 int movesOrginal = moves + 1;
                 editor.putInt("recordMoves", movesOrginal);
                 editor.apply();
             }
-            callWinDialog(moves, binding.timeTv.getText().toString());
             timer.cancel();
+            callWinDialog(moves, binding.timeTv.getText().toString());
+
         }
     }
 
@@ -335,9 +324,13 @@ public class GameActivity extends AppCompatActivity {
         timeTvDialog.setText("Time: " + time);
         movesTvDialod.setText("Moves: " + (moves + 1));
         winDialog.show();
-        home.setOnClickListener(v -> super.onBackPressed());
+        home.setOnClickListener(v -> {
+            resetAll();
+            super.onBackPressed();
+        });
         newgame.setOnClickListener(v -> {
             resetAll();
+            saveMoves();
             winDialog.dismiss();
             Intent intent = new Intent(getApplicationContext(), GameActivity.class);
             intent.putExtra("timeUntill", timerUntill);
@@ -346,13 +339,18 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
-    private void callLoseDialog(){
+
+    private void callLoseDialog() {
         loseDialog.setContentView(R.layout.lose_dialog);
         Button homebtn = loseDialog.findViewById(R.id.homeBtn);
         Button newgamebtn = loseDialog.findViewById(R.id.newGameBtn);
-        homebtn.setOnClickListener(v -> super.onBackPressed());
+        homebtn.setOnClickListener(v -> {
+            resetAll();
+            super.onBackPressed();
+        });
         newgamebtn.setOnClickListener(v -> {
             resetAll();
+            saveMoves();
             loseDialog.dismiss();
             Intent intent = new Intent(getApplicationContext(), GameActivity.class);
             intent.putExtra("timeUntill", timerUntill);
@@ -371,14 +369,9 @@ public class GameActivity extends AppCompatActivity {
         generateNumbers();
         loadTimer(timerUntill);
         binding.movesTv.setText(String.valueOf(moves));
+        buttons[emptyX][emptyY].setBackgroundColor(Color.parseColor("#00000000"));
         saveMoves();
     }
-
-    @Override
-    public void onBackPressed() {
-        callGoBackDialog();
-    }
-
     @Override
     protected void onPause() {
         timer.cancel();
@@ -391,12 +384,5 @@ public class GameActivity extends AppCompatActivity {
         if (!isTimerRunning)
             timer.start();
         super.onResume();
-    }
-
-    @Override
-    protected void onDestroy() {
-        timer.cancel();
-        isTimerRunning = false;
-        super.onDestroy();
     }
 }

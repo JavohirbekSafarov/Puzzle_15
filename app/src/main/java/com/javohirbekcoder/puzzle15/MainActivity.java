@@ -12,6 +12,7 @@ import android.transition.TransitionInflater;
 import android.transition.TransitionManager;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -41,17 +42,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        //region Ads
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });
-
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-        //endregion Ads
+        getWindow().addFlags (WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         binding.playGamebtn.setEnabled(true);
 

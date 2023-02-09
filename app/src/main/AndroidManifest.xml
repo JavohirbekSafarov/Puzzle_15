@@ -18,12 +18,13 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3862530189628759~9314714247"/>
+            android:value="ca-app-pub-8399176622985245~6951120809"/>
 
         <activity
             android:name=".InfoActivity"
             android:screenOrientation="portrait"
-            android:exported="false">
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -31,7 +32,8 @@
         <activity
             android:name=".GameActivity3x3"
             android:screenOrientation="portrait"
-            android:exported="false">
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -39,7 +41,8 @@
         <activity
             android:name=".GameActivity"
             android:screenOrientation="portrait"
-            android:exported="false">
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -47,7 +50,8 @@
         <activity
             android:name=".SettingsActivity"
             android:screenOrientation="portrait"
-            android:exported="false">
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -55,13 +59,13 @@
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
-            android:exported="true">
+            android:exported="true"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
