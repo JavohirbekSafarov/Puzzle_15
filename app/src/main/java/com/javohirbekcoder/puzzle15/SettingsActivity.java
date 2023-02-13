@@ -1,27 +1,21 @@
 package com.javohirbekcoder.puzzle15;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.WindowManager;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.javohirbekcoder.puzzle15.databinding.ActivitySettingsBinding;
-
-import java.util.concurrent.TimeUnit;
 
 public class SettingsActivity extends AppCompatActivity {
 
     private ActivitySettingsBinding binding;
 
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
     private Database database;
 
     @Override
@@ -35,13 +29,15 @@ public class SettingsActivity extends AppCompatActivity {
         binding.saveFB.setOnClickListener(v -> {
             database.setDifficulty(loadDifficulty());
             database.setGameMode(loadGameMode());
+            database.setVibratorOn(binding.vibtaror.isChecked());
+
             if (database.saveDatas())
-                showMessage("Succesfully saved!");
+                showMessage("Successfully saved!");
             else
                 showMessage("Failed saving!");
         });
 
-        binding.goBackbtn.setOnClickListener(v-> onBackPressed());
+        binding.goBackbtn.setOnClickListener(v -> onBackPressed());
     }
 
     private void showMessage(String message) {
@@ -52,7 +48,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void setDefaultValues() {
-        switch (database.getGameMode()){
+        switch (database.getGameMode()) {
             case 1:
                 binding.threeRB.setChecked(true);
                 break;
@@ -62,7 +58,7 @@ public class SettingsActivity extends AppCompatActivity {
             default:
                 Toast.makeText(this, "Still null -> Game Mode", Toast.LENGTH_SHORT).show();
         }
-        switch (database.getDifficulty()){
+        switch (database.getDifficulty()) {
             case "easy":
                 binding.easyRB.setChecked(true);
                 break;
@@ -75,43 +71,39 @@ public class SettingsActivity extends AppCompatActivity {
             default:
                 Toast.makeText(this, "Still null -> Difficulty", Toast.LENGTH_SHORT).show();
         }
+
+        binding.vibtaror.setChecked(database.isVibratorOn());
     }
 
     private int loadGameMode() {
-        int ids[] = {
+        int[] ids = {
                 R.id.threeRB,
                 R.id.fourRB
         };
-        int i = 0;
+        int i;
         for (i = 0; i < 2; i++) {
-            RadioButton radioButton =  findViewById(ids[i]);
+            RadioButton radioButton = findViewById(ids[i]);
             if (radioButton.isChecked()) {
                 break;
             }
         }
-        switch (i){
-            case 0:
-                return 1;
-            case 1:
-                return 2;
-        }
-        return 0;
+        return i + 1;
     }
 
     private String loadDifficulty() {
-        int ids[] = {
+        int[] ids = {
                 R.id.easyRB,
                 R.id.normalRB,
                 R.id.hardRB
         };
-        int i = 0;
+        int i;
         for (i = 0; i < 3; i++) {
-            RadioButton radioButton =  findViewById(ids[i]);
+            RadioButton radioButton = findViewById(ids[i]);
             if (radioButton.isChecked()) {
                 break;
             }
         }
-        switch (i){
+        switch (i) {
             case 0:
                 return "easy";
             case 1:
@@ -123,14 +115,12 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void loadComponentsSettings() {
-        sharedPreferences = this.getSharedPreferences("settings", MODE_PRIVATE);
-        editor = sharedPreferences.edit();
+        SharedPreferences sharedPreferences = this.getSharedPreferences("settings", MODE_PRIVATE);
         database = new Database(sharedPreferences);
 
-        if (database.loadSettings()) {
-            showMessage("Loaded settings");
+        if (database.loadSettings())
             setDefaultValues();
-        }else
+        else
             showMessage("Setting are not available...");
     }
 }

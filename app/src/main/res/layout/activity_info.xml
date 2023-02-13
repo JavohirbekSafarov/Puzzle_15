@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -57,11 +56,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginTop="50dp"
+            android:background="@drawable/gridback"
+            android:orientation="vertical"
             android:padding="10dp"
-            android:paddingStart="25dp"
-            android:background="@drawable/gridback">
+            android:paddingStart="25dp">
+
             <LinearLayout
                 android:id="@+id/checkAppVersion"
                 android:layout_width="match_parent"
@@ -139,6 +139,7 @@
                     android:textColor="@color/textColor"
                     android:textSize="18sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/shareApp"
                 android:layout_width="match_parent"
@@ -182,9 +183,9 @@
             app:tint="@color/thirdColor" />
 
         <TextView
-            android:layout_marginStart="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:fontFamily="@font/poppins_medium"
             android:text="Your wins: "
             android:textColor="@color/thirdColor"

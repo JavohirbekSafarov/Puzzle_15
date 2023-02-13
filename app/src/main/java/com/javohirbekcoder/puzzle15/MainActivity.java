@@ -1,31 +1,14 @@
 package com.javohirbekcoder.puzzle15;
 
-import android.animation.Animator;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.ContactsContract;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
-import android.transition.TransitionManager;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-import android.widget.ViewAnimator;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.material.snackbar.Snackbar;
 import com.javohirbekcoder.puzzle15.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,25 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         binding.playGamebtn.setOnClickListener(v -> {
-/*
-            //add circular animation
-            int x = binding.getRoot().getWidth() / 2;
-            int y = binding.getRoot().getHeight() * 3 / 4;
-            int startRadius = 0;
-            int endRadius = Math.max(binding.getRoot().getWidth(), binding.getRoot().getHeight());
-            Animator anim = ViewAnimationUtils.createCircularReveal(binding.getRoot(), x,y,startRadius, endRadius).setDuration(500);
-            binding.getRoot().setVisibility(View.VISIBLE);
-            binding.playGamebtn.setEnabled(false);
-            anim.start();
-
-            //add wait until animation finished
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                }
-            }, 500);*/
             Intent intent = null;
             switch (gameMode){
                 case 1:
@@ -76,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
                     intent = new Intent(getApplicationContext(), GameActivity.class);
                     break;
             }
+            assert intent != null;
             intent.putExtra("timeUntill", timeUntill);
             startActivity(intent);
         });
@@ -83,27 +48,18 @@ public class MainActivity extends AppCompatActivity {
 
         binding.settingsBtn.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), SettingsActivity.class)));
         binding.infoBtn.setOnClickListener(v -> {
-            //startActivity(new Intent(getApplicationContext(), InfoActivity.class));
             Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
             intent.putExtra("wins", wins);
             startActivity(intent);
         });
     }
 
-    private void showMessage(String message) {
-        Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT).setTextColor(Color.parseColor("#ffffff")).setBackgroundTint(Color.parseColor("#00664A")).show();
-    }
-
     private void loadDatabase() {
         SharedPreferences sharedPreferences = this.getSharedPreferences("settings", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
         database = new Database(sharedPreferences);
 
         if (database.loadSettings()) {
-            //showMessage("Loaded settings");
             setSettingtoGame();
-        }else {
-            showMessage("Setting are not available...");
         }
     }
 
@@ -115,8 +71,6 @@ public class MainActivity extends AppCompatActivity {
             case 2:
                 gameMode = 2;
                 break;
-            default:
-                showMessage("Still null -> Game Mode");
         }
         switch (database.getDifficulty()){
             case "easy":
@@ -128,8 +82,6 @@ public class MainActivity extends AppCompatActivity {
             case "hard":
                 timeUntill = 3;
                 break;
-            default:
-                showMessage("Still null -> Difficulty");
         }
         wins = database.getWins();
         //Toast.makeText(this, "wins: " + wins, Toast.LENGTH_SHORT).show();

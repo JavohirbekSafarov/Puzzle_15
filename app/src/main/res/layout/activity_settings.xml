@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/rootLayout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/secondaryColor"
-    tools:ignore="HardcodedText"
-    tools:context=".SettingsActivity">
+    tools:context=".SettingsActivity"
+    tools:ignore="HardcodedText">
 
     <ImageView
         android:id="@+id/goBackbtn"
@@ -16,8 +15,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
         android:layout_marginTop="10dp"
-        android:clickable="true"
         android:background="?attr/selectableItemBackground"
+        android:clickable="true"
         android:padding="10dp"
         android:scaleType="fitStart"
         android:src="@drawable/ic_baseline_arrow_back_ios_24"
@@ -29,6 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:paddingHorizontal="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/goBackbtn">
@@ -37,7 +37,6 @@
             android:id="@+id/difficultyRG"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
             android:layout_marginTop="30dp"
             android:background="@drawable/gridback"
             android:padding="8dp"
@@ -94,7 +93,6 @@
             android:id="@+id/gameModeRG"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
             android:layout_marginTop="30dp"
             android:background="@drawable/gridback"
             android:padding="8dp"
@@ -137,6 +135,42 @@
                 android:textColor="@color/textColor"
                 android:textSize="15sp" />
         </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/vibrationState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/gridback"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/poppins_medium"
+                android:gravity="center_vertical"
+                android:text="Vibration"
+                android:textColor="@color/textColor"
+                android:textSize="18sp" />
+
+            <Switch
+                android:id="@+id/vibtaror"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:text="( click effect )"
+                android:textColor="@color/textColor"
+                android:textSize="15sp" />
+        </LinearLayout>
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton

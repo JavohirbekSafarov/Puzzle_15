@@ -10,8 +10,9 @@ public class Database {
     private int wins = 0;
     private static int gameMode = 0;
     private static String difficulty;
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
+    public static boolean isVibratorOn = true;
+    private final SharedPreferences sharedPreferences;
+    private final SharedPreferences.Editor editor;
 
     public Database(SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
@@ -22,8 +23,16 @@ public class Database {
         return gameMode;
     }
 
+    public boolean isVibratorOn() {
+        return isVibratorOn;
+    }
+
+    public void setVibratorOn(boolean vibratorOn) {
+        isVibratorOn = vibratorOn;
+    }
+
     public void setGameMode(int gameMode) {
-        this.gameMode = gameMode;
+        Database.gameMode = gameMode;
     }
 
     public String getDifficulty() {
@@ -31,7 +40,7 @@ public class Database {
     }
 
     public void setDifficulty(String difficulty) {
-        this.difficulty = difficulty;
+        Database.difficulty = difficulty;
     }
 
     public int getWins() {
@@ -42,25 +51,28 @@ public class Database {
         this.wins = wins;
     }
 
-    public boolean saveDatas(){
+    public boolean saveDatas() {
         if (gameMode == 0 || difficulty.isEmpty())
             return false;
         else {
             editor.putInt("gameMode", gameMode);
             editor.putString("difficulty", difficulty);
-            return editor.commit();
+            editor.putBoolean("vibrator", isVibratorOn);
+            editor.apply();
+            return true;
         }
     }
 
-    public void saveWins(){
+    public void saveWins() {
         editor.putInt("wins", wins);
-        editor.commit();
+        editor.apply();
     }
 
-    public boolean loadSettings(){
+    public boolean loadSettings() {
         wins = sharedPreferences.getInt("wins", 0);
         gameMode = sharedPreferences.getInt("gameMode", 0);
         difficulty = sharedPreferences.getString("difficulty", null);
+        isVibratorOn = sharedPreferences.getBoolean("vibrator", true);
         return difficulty != null;
     }
 }

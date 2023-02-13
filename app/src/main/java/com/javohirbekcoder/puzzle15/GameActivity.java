@@ -1,44 +1,41 @@
 package com.javohirbekcoder.puzzle15;
 
+import static com.javohirbekcoder.puzzle15.Database.isVibratorOn;
 import static com.javohirbekcoder.puzzle15.MainActivity.wins;
-
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.appcompat.content.res.AppCompatResources;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.OnUserEarnedRewardListener;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.gms.ads.rewarded.RewardItem;
-import com.google.android.gms.ads.rewarded.RewardedAd;
-import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
-import com.google.android.material.snackbar.Snackbar;
 import com.javohirbekcoder.puzzle15.databinding.ActivityGameBinding;
-
+import java.util.Objects;
 import java.util.Random;
+import nl.dionsegijn.konfetti.core.PartyFactory;
+import nl.dionsegijn.konfetti.core.emitter.Emitter;
+import nl.dionsegijn.konfetti.core.emitter.EmitterConfig;
+import nl.dionsegijn.konfetti.core.models.Shape;
+import nl.dionsegijn.konfetti.core.models.Size;
+import nl.dionsegijn.konfetti.xml.KonfettiView;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -52,22 +49,20 @@ public class GameActivity extends AppCompatActivity {
     private CountDownTimer timer;
     private int timeCount = 0;
     private int[] tiles;
-    boolean isWin = false;
+    private boolean isWin = false;
     private final Integer[] btnIds = {R.id.button1, R.id.button2,
             R.id.button3, R.id.button4, R.id.button5, R.id.button6,
             R.id.button7, R.id.button8, R.id.button9, R.id.button10,
             R.id.button11, R.id.button12, R.id.button13, R.id.button14,
             R.id.button15, R.id.button16};
 
-    private Dialog goBackDialog, winDialog, loseDialog;
+    private Dialog winDialog, loseDialog;
     private boolean isTimerRunning = false;
 
     private int timerUntill = 30;
-    private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private int bestRecordMoves;
 
-    private String[] tilesArray;
     Database database;
 
     @Override
@@ -83,6 +78,8 @@ public class GameActivity extends AppCompatActivity {
 
         binding.goBackbtn.setOnClickListener(v -> onBackPressed());
         binding.shuffleBtn.setOnClickListener(v -> {
+            if (isVibratorOn)
+                vibration();
             resetAll();
             loadBannerAd();
             binding.shuffleBtn.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_shuffle));
@@ -109,7 +106,6 @@ public class GameActivity extends AppCompatActivity {
 
     public void loadArray() {
         SharedPreferences sharedPreferences = this.getSharedPreferences("saveTiles", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
 
         boolean isFirstOpen = sharedPreferences.getBoolean("isFirstOpen", true);
 
@@ -132,7 +128,7 @@ public class GameActivity extends AppCompatActivity {
         loadTimer(timerUntill);
     }
 
-    public boolean saveArray(String[] array) {
+    public void saveArray(String[] array) {
         SharedPreferences sharedPreferences = this.getSharedPreferences("saveTiles", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         for (int i = 0; i < array.length; i++) {
@@ -141,12 +137,13 @@ public class GameActivity extends AppCompatActivity {
         editor.putInt("time", timeCount);
         editor.putInt("moves", moves);
         editor.putBoolean("isFirstOpen", false);
-        return editor.commit();
+        editor.apply();
     }
 
 
     private void loadTimer(int timeMinutes) {
         timer = new CountDownTimer((long) timeMinutes * 60 * 1000, 1000) {
+            @SuppressLint("DefaultLocale")
             @Override
             public void onTick(long millisUntilFinished) {
                 isTimerRunning = true;
@@ -202,16 +199,14 @@ public class GameActivity extends AppCompatActivity {
         winDialog.setCancelable(false);
         winDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
-        goBackDialog = new Dialog(GameActivity.this);
-        goBackDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-
         loseDialog = new Dialog(GameActivity.this);
         loseDialog.setCancelable(false);
         loseDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
     }
 
+    @SuppressLint("SetTextI18n")
     private void loadBestRecord() {
-        sharedPreferences = getSharedPreferences("records", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("records", MODE_PRIVATE);
         editor = sharedPreferences.edit();
         bestRecordMoves = sharedPreferences.getInt("recordMoves", 99999999);
         if (bestRecordMoves == 99999999)
@@ -245,6 +240,9 @@ public class GameActivity extends AppCompatActivity {
         int x = button.getTag().toString().charAt(0) - '0';
         int y = button.getTag().toString().charAt(1) - '0';
 
+        if (isVibratorOn)
+            vibration();
+
         if ((Math.abs(emptyX - x) == 1 && emptyY == y) || (Math.abs(emptyY - y) == 1 && emptyX == x)) {
             buttons[emptyX][emptyY].setText(button.getText().toString());
             buttons[emptyX][emptyY].setBackgroundColor(Color.parseColor("#2C7DC2"));
@@ -265,7 +263,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void saveMoves() {
-        tilesArray = new String[16];
+        String[] tilesArray = new String[16];
         for (int i = 0; i < 16; i++) {
             Button btn = (Button) findViewById(btnIds[i]);
             if (btn.getText() == null || btn.getText() == "") {
@@ -306,7 +304,6 @@ public class GameActivity extends AppCompatActivity {
 
     private void saveWins() {
         SharedPreferences prefsDatabase = this.getSharedPreferences("settings", MODE_PRIVATE);
-        SharedPreferences.Editor editorDatabase = prefsDatabase.edit();
         database = new Database(prefsDatabase);
         database.loadSettings();
         wins = database.getWins();
@@ -315,20 +312,39 @@ public class GameActivity extends AppCompatActivity {
         database.saveWins();
     }
 
+    @SuppressLint("SetTextI18n")
     private void callWinDialog(int moves, String time) {
+
         winDialog.setContentView(R.layout.win_dialog);
+
+        Shape.DrawableShape drawableShape = new Shape.DrawableShape(Objects.requireNonNull(AppCompatResources.getDrawable(this, R.drawable.cup)), true);
+        EmitterConfig emitterConfig = new Emitter(300, MILLISECONDS).max(300);
+        KonfettiView konfettiView = winDialog.findViewById(R.id.konfettiview);
+        konfettiView.start(
+                new PartyFactory(emitterConfig)
+                        .shapes(Shape.Circle.INSTANCE, Shape.Square.INSTANCE, drawableShape)
+                        .spread(360)
+                        .position(0, 0.5, 1, 1)
+                        .sizes(new Size(8, 50, 10))
+                        .timeToLive(3000)
+                        .fadeOutEnabled(true)
+                        .build()
+        );
+
+
         Button home = winDialog.findViewById(R.id.homeBtn);
-        Button newgame = winDialog.findViewById(R.id.newGameBtn);
+        Button new_game = winDialog.findViewById(R.id.newGameBtn);
         TextView timeTvDialog = winDialog.findViewById(R.id.timeTvDialog);
-        TextView movesTvDialod = winDialog.findViewById(R.id.movesTvDialog);
+        TextView movesTvDialog = winDialog.findViewById(R.id.movesTvDialog);
         timeTvDialog.setText("Time: " + time);
-        movesTvDialod.setText("Moves: " + (moves + 1));
+        movesTvDialog.setText("Moves: " + (moves + 1));
         winDialog.show();
         home.setOnClickListener(v -> {
             resetAll();
             super.onBackPressed();
         });
-        newgame.setOnClickListener(v -> {
+
+        new_game.setOnClickListener(v -> {
             resetAll();
             saveMoves();
             winDialog.dismiss();
@@ -372,6 +388,7 @@ public class GameActivity extends AppCompatActivity {
         buttons[emptyX][emptyY].setBackgroundColor(Color.parseColor("#00000000"));
         saveMoves();
     }
+
     @Override
     protected void onPause() {
         timer.cancel();
@@ -384,5 +401,17 @@ public class GameActivity extends AppCompatActivity {
         if (!isTimerRunning)
             timer.start();
         super.onResume();
+    }
+
+    private void vibration() {
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        // Vibrate for 500 milliseconds
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(5, VibrationEffect.DEFAULT_AMPLITUDE));
+
+        } else {
+            //deprecated in API 26
+            v.vibrate(5);
+        }
     }
 }
