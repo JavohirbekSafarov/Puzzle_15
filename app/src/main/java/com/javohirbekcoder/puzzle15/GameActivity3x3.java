@@ -24,14 +24,22 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.javohirbekcoder.puzzle15.databinding.ActivityGameActivity3x3Binding;
 
 import java.util.Objects;
@@ -48,6 +56,7 @@ public class GameActivity3x3 extends AppCompatActivity {
 
     private ActivityGameActivity3x3Binding binding;
     private final String arrayName = "savedTiles";
+    private InterstitialAd mInterstitialAd;
 
     private int moves = 0;
     private int emptyX = 2;
@@ -80,6 +89,7 @@ public class GameActivity3x3 extends AppCompatActivity {
         timerUntil = getIntent().getIntExtra("timeUntill", 30);
 
         binding.shuffleBtn3.setOnClickListener(v -> {
+            loadInterstitialAd();
             if (isVibratorOn)
                 vibration();
             resetAll();
@@ -89,8 +99,8 @@ public class GameActivity3x3 extends AppCompatActivity {
 
         binding.goBackbtn.setOnClickListener(v -> onBackPressed());
 
-
         bannerAdsLoadAndShow();
+        loadInterstitialAd();
         loadViews();
         loadNumbers();
         generateNumbers();
@@ -207,7 +217,6 @@ public class GameActivity3x3 extends AppCompatActivity {
     }
 
     private void loadTimer(int timeMinutes) {
-        if (isTimerRunning) timer.cancel();
         timer = new CountDownTimer((long) timeMinutes * 60 * 1000, 1000) {
             @SuppressLint("DefaultLocale")
             @Override
@@ -374,6 +383,78 @@ public class GameActivity3x3 extends AppCompatActivity {
         wins++;
         database.setWins(wins);
         database.saveWins();
+
+        showInterstitialAd();
+        loadInterstitialAd();
+    }
+
+    private void showInterstitialAd() {
+        if (mInterstitialAd != null) {
+            mInterstitialAd.show(GameActivity3x3.this);
+        }
+    }
+
+    private void loadInterstitialAd() {
+
+        String TAG = "AD";
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        MobileAds.initialize(this, initializationStatus -> {});
+
+        InterstitialAd.load(this,"ca-app-pub-8399176622985245/8029199454", adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+                        Log.i(TAG, "onAdLoaded");
+
+                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+                            @Override
+                            public void onAdClicked() {
+                                // Called when a click is recorded for an ad.
+                                Log.d(TAG, "Ad was clicked.");
+                            }
+
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                // Called when ad is dismissed.
+                                // Set the ad reference to null so you don't show the ad a second time.
+                                Log.d(TAG, "Ad dismissed fullscreen content.");
+                                mInterstitialAd = null;
+                            }
+
+                            @Override
+                            public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                                // Called when ad fails to show.
+                                Log.e(TAG, "Ad failed to show fullscreen content.");
+                                mInterstitialAd = null;
+                            }
+
+                            @Override
+                            public void onAdImpression() {
+                                // Called when an impression is recorded for an ad.
+                                Log.d(TAG, "Ad recorded an impression.");
+                            }
+
+                            @Override
+                            public void onAdShowedFullScreenContent() {
+                                // Called when ad is shown.
+                                Log.d(TAG, "Ad showed fullscreen content.");
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        Log.d(TAG, loadAdError.toString());
+                        mInterstitialAd = null;
+                    }
+                });
     }
 
     private void resetAll() {

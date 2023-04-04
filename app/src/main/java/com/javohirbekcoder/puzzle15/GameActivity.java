@@ -3,6 +3,7 @@ package com.javohirbekcoder.puzzle15;
 import static com.javohirbekcoder.puzzle15.Database.isVibratorOn;
 import static com.javohirbekcoder.puzzle15.MainActivity.wins;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -15,21 +16,32 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.javohirbekcoder.puzzle15.databinding.ActivityGameBinding;
+
 import java.util.Objects;
 import java.util.Random;
+
 import nl.dionsegijn.konfetti.core.PartyFactory;
 import nl.dionsegijn.konfetti.core.emitter.Emitter;
 import nl.dionsegijn.konfetti.core.emitter.EmitterConfig;
@@ -42,6 +54,8 @@ public class GameActivity extends AppCompatActivity {
     private ActivityGameBinding binding;
     private final String arrayName = "savedTiles";
 
+    private InterstitialAd mInterstitialAd;
+
     private int moves = 0;
     private int emptyX = 3;
     private int emptyY = 3;
@@ -50,11 +64,7 @@ public class GameActivity extends AppCompatActivity {
     private int timeCount = 0;
     private int[] tiles;
     private boolean isWin = false;
-    private final Integer[] btnIds = {R.id.button1, R.id.button2,
-            R.id.button3, R.id.button4, R.id.button5, R.id.button6,
-            R.id.button7, R.id.button8, R.id.button9, R.id.button10,
-            R.id.button11, R.id.button12, R.id.button13, R.id.button14,
-            R.id.button15, R.id.button16};
+    private final Integer[] btnIds = {R.id.button1, R.id.button2, R.id.button3, R.id.button4, R.id.button5, R.id.button6, R.id.button7, R.id.button8, R.id.button9, R.id.button10, R.id.button11, R.id.button12, R.id.button13, R.id.button14, R.id.button15, R.id.button16};
 
     private Dialog winDialog, loseDialog;
     private boolean isTimerRunning = false;
@@ -78,14 +88,15 @@ public class GameActivity extends AppCompatActivity {
 
         binding.goBackbtn.setOnClickListener(v -> onBackPressed());
         binding.shuffleBtn.setOnClickListener(v -> {
-            if (isVibratorOn)
-                vibration();
+            loadInterstitialAd();
+            if (isVibratorOn) vibration();
             resetAll();
             loadBannerAd();
             binding.shuffleBtn.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_shuffle));
         });
 
         loadBannerAd();
+        loadInterstitialAd();
         loadViews();
         loadNumbers();
         generateNumbers();
@@ -100,7 +111,8 @@ public class GameActivity extends AppCompatActivity {
         });
 
         AdView mAdView = findViewById(R.id.adView);
-        @SuppressLint("VisibleForTests") AdRequest adRequest = new AdRequest.Builder().build();
+        @SuppressLint("VisibleForTests")
+        AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
     }
 
@@ -150,10 +162,7 @@ public class GameActivity extends AppCompatActivity {
                 timeCount++;
                 int second = timeCount % 60;
                 int minute = timeCount / 60;
-                YoYo.with(Techniques.Pulse)
-                        .duration(700)
-                        .repeat(0)
-                        .playOn(findViewById(R.id.timeTv));
+                YoYo.with(Techniques.Pulse).duration(700).repeat(0).playOn(findViewById(R.id.timeTv));
                 binding.timeTv.setText(String.format("%02d:%02d", minute, second));
             }
 
@@ -190,8 +199,7 @@ public class GameActivity extends AppCompatActivity {
             tiles[n] = temp;
         }
         loadDataToViews();
-        if (!isSolvable())
-            generateNumbers();
+        if (!isSolvable()) generateNumbers();
     }
 
     private void loadDialogs() {
@@ -209,10 +217,8 @@ public class GameActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("records", MODE_PRIVATE);
         editor = sharedPreferences.edit();
         bestRecordMoves = sharedPreferences.getInt("recordMoves", 99999999);
-        if (bestRecordMoves == 99999999)
-            binding.recordTV.setText("You have not best record!");
-        else
-            binding.recordTV.setText("Best record: " + bestRecordMoves);
+        if (bestRecordMoves == 99999999) binding.recordTV.setText("You have not best record!");
+        else binding.recordTV.setText("Best record: " + bestRecordMoves);
     }
 
     private void loadDataToViews() {
@@ -228,8 +234,7 @@ public class GameActivity extends AppCompatActivity {
         int countInversions = 0;
         for (int i = 0; i < 15; i++) {
             for (int j = 0; j < i; j++) {
-                if (tiles[j] > tiles[i])
-                    countInversions++;
+                if (tiles[j] > tiles[i]) countInversions++;
             }
         }
         return countInversions % 2 == 0;
@@ -240,8 +245,7 @@ public class GameActivity extends AppCompatActivity {
         int x = button.getTag().toString().charAt(0) - '0';
         int y = button.getTag().toString().charAt(1) - '0';
 
-        if (isVibratorOn)
-            vibration();
+        if (isVibratorOn) vibration();
 
         if ((Math.abs(emptyX - x) == 1 && emptyY == y) || (Math.abs(emptyY - y) == 1 && emptyX == x)) {
             buttons[emptyX][emptyY].setText(button.getText().toString());
@@ -251,10 +255,7 @@ public class GameActivity extends AppCompatActivity {
             emptyX = x;
             emptyY = y;
             checkWin();
-            YoYo.with(Techniques.FadeIn)
-                    .duration(700)
-                    .repeat(0)
-                    .playOn(findViewById(R.id.movesTv));
+            YoYo.with(Techniques.FadeIn).duration(700).repeat(0).playOn(findViewById(R.id.movesTv));
             moves++;
             binding.movesTv.setText(String.valueOf(moves));
         }
@@ -268,8 +269,7 @@ public class GameActivity extends AppCompatActivity {
             Button btn = (Button) findViewById(btnIds[i]);
             if (btn.getText() == null || btn.getText() == "") {
                 tilesArray[i] = "0";
-            } else
-                tilesArray[i] = String.valueOf(btn.getText());
+            } else tilesArray[i] = String.valueOf(btn.getText());
         }
         saveArray(tilesArray);
     }
@@ -310,6 +310,9 @@ public class GameActivity extends AppCompatActivity {
         wins++;
         database.setWins(wins);
         database.saveWins();
+
+        showInterstitialAd();
+        loadInterstitialAd();
     }
 
     @SuppressLint("SetTextI18n")
@@ -320,16 +323,7 @@ public class GameActivity extends AppCompatActivity {
         Shape.DrawableShape drawableShape = new Shape.DrawableShape(Objects.requireNonNull(AppCompatResources.getDrawable(this, R.drawable.cup)), true);
         EmitterConfig emitterConfig = new Emitter(300, MILLISECONDS).max(300);
         KonfettiView konfettiView = winDialog.findViewById(R.id.konfettiview);
-        konfettiView.start(
-                new PartyFactory(emitterConfig)
-                        .shapes(Shape.Circle.INSTANCE, Shape.Square.INSTANCE, drawableShape)
-                        .spread(360)
-                        .position(0, 0.5, 1, 1)
-                        .sizes(new Size(8, 50, 10))
-                        .timeToLive(3000)
-                        .fadeOutEnabled(true)
-                        .build()
-        );
+        konfettiView.start(new PartyFactory(emitterConfig).shapes(Shape.Circle.INSTANCE, Shape.Square.INSTANCE, drawableShape).spread(360).position(0, 0.5, 1, 1).sizes(new Size(8, 50, 10)).timeToLive(3000).fadeOutEnabled(true).build());
 
 
         Button home = winDialog.findViewById(R.id.homeBtn);
@@ -398,8 +392,7 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        if (!isTimerRunning)
-            timer.start();
+        if (!isTimerRunning) timer.start();
         super.onResume();
     }
 
@@ -413,5 +406,74 @@ public class GameActivity extends AppCompatActivity {
             //deprecated in API 26
             v.vibrate(5);
         }
+    }
+
+    private void showInterstitialAd() {
+        if (mInterstitialAd != null) {
+            mInterstitialAd.show(GameActivity.this);
+        }
+    }
+
+    private void loadInterstitialAd() {
+
+        String TAG = "AD";
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        MobileAds.initialize(this, initializationStatus -> {
+        });
+
+        InterstitialAd.load(this, "ca-app-pub-8399176622985245/8029199454", adRequest, new InterstitialAdLoadCallback() {
+            @Override
+            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                // The mInterstitialAd reference will be null until
+                // an ad is loaded.
+                mInterstitialAd = interstitialAd;
+                Log.i(TAG, "onAdLoaded");
+
+                mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                    @Override
+                    public void onAdClicked() {
+                        // Called when a click is recorded for an ad.
+                        Log.d(TAG, "Ad was clicked.");
+                    }
+
+                    @Override
+                    public void onAdDismissedFullScreenContent() {
+                        // Called when ad is dismissed.
+                        // Set the ad reference to null so you don't show the ad a second time.
+                        Log.d(TAG, "Ad dismissed fullscreen content.");
+                        mInterstitialAd = null;
+                    }
+
+                    @Override
+                    public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                        // Called when ad fails to show.
+                        Log.e(TAG, "Ad failed to show fullscreen content.");
+                        mInterstitialAd = null;
+                    }
+
+                    @Override
+                    public void onAdImpression() {
+                        // Called when an impression is recorded for an ad.
+                        Log.d(TAG, "Ad recorded an impression.");
+                    }
+
+                    @Override
+                    public void onAdShowedFullScreenContent() {
+                        // Called when ad is shown.
+                        Log.d(TAG, "Ad showed fullscreen content.");
+                    }
+                });
+
+            }
+
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                // Handle the error
+                Log.d(TAG, loadAdError.toString());
+                mInterstitialAd = null;
+            }
+        });
     }
 }
