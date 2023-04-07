@@ -14,6 +14,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
@@ -38,10 +39,8 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.javohirbekcoder.puzzle15.databinding.ActivityGameBinding;
-
 import java.util.Objects;
 import java.util.Random;
-
 import nl.dionsegijn.konfetti.core.PartyFactory;
 import nl.dionsegijn.konfetti.core.emitter.Emitter;
 import nl.dionsegijn.konfetti.core.emitter.EmitterConfig;
@@ -55,6 +54,7 @@ public class GameActivity extends AppCompatActivity {
     private final String arrayName = "savedTiles";
 
     private InterstitialAd mInterstitialAd;
+    private Handler handler;
 
     private int moves = 0;
     private int emptyX = 3;
@@ -82,6 +82,7 @@ public class GameActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        handler = new Handler();
 
         tiles = new int[16];
         timerUntill = getIntent().getIntExtra("timeUntill", 30);
@@ -312,7 +313,7 @@ public class GameActivity extends AppCompatActivity {
         database.saveWins();
 
         showInterstitialAd();
-        loadInterstitialAd();
+        //loadInterstitialAd();
     }
 
     @SuppressLint("SetTextI18n")
@@ -335,6 +336,7 @@ public class GameActivity extends AppCompatActivity {
         winDialog.show();
         home.setOnClickListener(v -> {
             resetAll();
+            handler = null;
             super.onBackPressed();
         });
 
@@ -342,6 +344,7 @@ public class GameActivity extends AppCompatActivity {
             resetAll();
             saveMoves();
             winDialog.dismiss();
+            handler = null;
             Intent intent = new Intent(getApplicationContext(), GameActivity.class);
             intent.putExtra("timeUntill", timerUntill);
             startActivity(intent);
@@ -356,11 +359,13 @@ public class GameActivity extends AppCompatActivity {
         Button newgamebtn = loseDialog.findViewById(R.id.newGameBtn);
         homebtn.setOnClickListener(v -> {
             resetAll();
+            handler = null;
             super.onBackPressed();
         });
         newgamebtn.setOnClickListener(v -> {
             resetAll();
             saveMoves();
+            handler = null;
             loseDialog.dismiss();
             Intent intent = new Intent(getApplicationContext(), GameActivity.class);
             intent.putExtra("timeUntill", timerUntill);
@@ -386,6 +391,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         timer.cancel();
+        handler = null;
         isTimerRunning = false;
         super.onPause();
     }
@@ -393,6 +399,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         if (!isTimerRunning) timer.start();
+        handler = new Handler();
         super.onResume();
     }
 
@@ -414,9 +421,15 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler = null;
+    }
+
     private void loadInterstitialAd() {
 
-        String TAG = "AD";
+        String TAG = "AD-Interstitial";
 
         AdRequest adRequest = new AdRequest.Builder().build();
 
@@ -473,6 +486,10 @@ public class GameActivity extends AppCompatActivity {
                 // Handle the error
                 Log.d(TAG, loadAdError.toString());
                 mInterstitialAd = null;
+                if (handler != null)
+                    handler.postDelayed(() -> {
+                        loadInterstitialAd();
+                    }, 10000);
             }
         });
     }
