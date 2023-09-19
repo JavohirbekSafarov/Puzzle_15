@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "257700842729",
+    "project_id": "puzzle-15-2db15",
+    "storage_bucket": "puzzle-15-2db15.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:257700842729:android:178c0d3c6890ecbb8ef478",
+        "android_client_info": {
+          "package_name": "com.javohirbekcoder.puzzle15"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2CoJEChoZ2zTS4bDk0Gdw_3lo5Ygo9Aw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

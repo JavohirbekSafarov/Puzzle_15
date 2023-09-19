@@ -336,6 +336,7 @@ public class GameActivity extends AppCompatActivity {
         winDialog.show();
         home.setOnClickListener(v -> {
             resetAll();
+            winDialog.dismiss();
             handler = null;
             super.onBackPressed();
         });

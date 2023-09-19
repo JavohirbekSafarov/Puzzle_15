@@ -23,11 +23,9 @@ import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
-
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.ads.AdError;
@@ -39,10 +37,8 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.javohirbekcoder.puzzle15.databinding.ActivityGameActivity3x3Binding;
-
 import java.util.Objects;
 import java.util.Random;
-
 import nl.dionsegijn.konfetti.core.PartyFactory;
 import nl.dionsegijn.konfetti.core.emitter.Emitter;
 import nl.dionsegijn.konfetti.core.emitter.EmitterConfig;
@@ -158,11 +154,11 @@ public class GameActivity3x3 extends AppCompatActivity {
     private void loadDialogs() {
         winDialog = new Dialog(GameActivity3x3.this);
         winDialog.setCancelable(false);
-        winDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        Objects.requireNonNull(winDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         loseDialog = new Dialog(GameActivity3x3.this);
         loseDialog.setCancelable(false);
-        loseDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        Objects.requireNonNull(loseDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
     }
 
 
@@ -210,7 +206,7 @@ public class GameActivity3x3 extends AppCompatActivity {
     private void loadViews() {
         buttons = new Button[3][3];
         for (int i = 0; i < 9; i++) {
-            buttons[i / 3][i % 3] = (Button) findViewById(btnIds[i]);
+            buttons[i / 3][i % 3] = findViewById(btnIds[i]);
             Log.d("Infos", " : " + i / 3 + i % 3);
         }
     }
@@ -266,7 +262,7 @@ public class GameActivity3x3 extends AppCompatActivity {
     private void saveMoves() {
         String[] tilesArray = new String[9];
         for (int i = 0; i < 9; i++) {
-            Button btn = (Button) findViewById(btnIds[i]);
+            Button btn = findViewById(btnIds[i]);
             if (btn.getText() == null || btn.getText() == "") {
                 tilesArray[i] = "0";
             } else
@@ -339,6 +335,7 @@ public class GameActivity3x3 extends AppCompatActivity {
         winDialog.show();
         home.setOnClickListener(v -> {
             resetAll();
+            winDialog.dismiss();
             handler = null;
             super.onBackPressed();
         });
@@ -461,9 +458,7 @@ public class GameActivity3x3 extends AppCompatActivity {
                         Log.d(TAG, loadAdError.toString());
                         mInterstitialAd = null;
                         if (handler != null)
-                            handler.postDelayed(() -> {
-                                loadInterstitialAd();
-                            }, 10000);
+                            handler.postDelayed(() -> loadInterstitialAd(), 10000);
                     }
                 });
     }
@@ -513,5 +508,13 @@ public class GameActivity3x3 extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         handler = null;
+        destroyInterstitialAd();
     }
+
+    private void destroyInterstitialAd() {
+        if (mInterstitialAd != null) {
+            mInterstitialAd = null;
+        }
+    }
+
 }
